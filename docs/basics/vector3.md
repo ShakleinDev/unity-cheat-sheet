@@ -1,15 +1,15 @@
-# Unity Vector3 - 3D Vectors and Operations
+# Unity Vector3 — 3D-векторы и операции над ними
 
-`Vector3` represents 3D positions and directions. Unity relies on it for coordinates, velocities, normals, and almost every spatial calculation. Master the helpers and operators so you can manipulate vectors quickly without reinventing common math.
+`Vector3` представляет трёхмерные позиции и направления. Unity использует его для координат, скоростей, нормалей и практически любых пространственных вычислений. Освойте вспомогательные методы и операторы, чтобы быстро работать с векторами, не изобретая велосипед.
 
-## Creating Vectors
+## Создание векторов
 
 ```csharp
-// Individual components (x, y, z)
+// Отдельные компоненты (x, y, z)
 Vector3 origin = new Vector3(0f, 0f, 0f);
 Vector3 position = new Vector3(2.5f, 1f, -4f);
 
-// Convenience constructors
+// Удобные константы
 Vector3 zeros = Vector3.zero;
 Vector3 ones = Vector3.one;
 Vector3 unitX = Vector3.right;   // (1, 0, 0)
@@ -17,98 +17,98 @@ Vector3 unitY = Vector3.up;      // (0, 1, 0)
 Vector3 unitZ = Vector3.forward; // (0, 0, 1)
 ```
 
-Unity treats forward as positive Z in local space and up as positive Y. These direction constants are normalized; scale them to get distances.
+В Unity вперёд — это положительное направление Z в локальном пространстве, а вверх — положительное Y. Эти константы направления нормализованы; умножайте их на скаляр для получения расстояний.
 
-## Basic Math Operations
+## Базовые математические операции
 
 ```csharp
 Vector3 a = new Vector3(1f, 2f, 3f);
 Vector3 b = new Vector3(-2f, 0f, 5f);
 
-Vector3 sum        = a + b;                // add component-wise
-Vector3 difference = a - b;                // subtract component-wise
-Vector3 scaled     = a * 2f;               // scale by a scalar
-Vector3 hadamard   = Vector3.Scale(a, b);  // scale per component
+Vector3 sum        = a + b;                // покомпонентное сложение
+Vector3 difference = a - b;                // покомпонентное вычитание
+Vector3 scaled     = a * 2f;               // масштабирование скаляром
+Vector3 hadamard   = Vector3.Scale(a, b);  // масштабирование по каждому компоненту
 ```
 
-These operators cover most day-to-day math: add/subtract to combine offsets, multiply by scalars to grow/shrink vectors, and use `Vector3.Scale` when you need non-uniform scaling.
+Эти операторы охватывают большинство повседневных задач: сложение/вычитание для объединения смещений, умножение на скаляр для увеличения/уменьшения векторов, и `Vector3.Scale` — для неравномерного масштабирования.
 
-### Dot Product (alignment and angles)
+### Скалярное произведение (выравнивание и углы)
 
-The dot product (dot multiplication) returns a scalar describing how aligned two vectors are: `1` means pointing the same way, `0` means perpendicular, and `-1` means opposite.
+Скалярное произведение возвращает скаляр, описывающий степень сонаправленности двух векторов: `1` означает одинаковое направление, `0` — перпендикулярность, `-1` — противоположное направление.
 
 ```csharp
 Vector3 toTargetDir = (target.position - transform.position).normalized;
 float alignment = Vector3.Dot(transform.forward, toTargetDir);
-bool facingTarget = alignment > 0.5f; // tweak threshold to taste
+bool facingTarget = alignment > 0.5f; // настройте порог по вкусу
 ```
 
-You can turn that scalar into an angle when needed: `float angle = Mathf.Acos(Mathf.Clamp(alignment, -1f, 1f)) * Mathf.Rad2Deg;`.
+При необходимости скаляр можно перевести в угол: `float angle = Mathf.Acos(Mathf.Clamp(alignment, -1f, 1f)) * Mathf.Rad2Deg;`.
 
-### Cross Product (build a surface basis)
+### Векторное произведение (построение базиса поверхности)
 
-The cross product outputs a vector perpendicular to the two inputs. It is perfect for building local axes such as tangents and binormals from a known surface normal.
+Векторное произведение возвращает вектор, перпендикулярный двум исходным. Оно идеально подходит для построения локальных осей — касательных и бинормалей — из известной нормали поверхности.
 
 ```csharp
 Vector3 surfaceNormal = hit.normal.normalized;
 Vector3 referenceUp = Mathf.Abs(Vector3.Dot(surfaceNormal, Vector3.up)) > 0.99f ? Vector3.right : Vector3.up;
-Vector3 tangent = Vector3.Cross(referenceUp, surfaceNormal).normalized;   // lies on the surface
-Vector3 binormal = Vector3.Cross(surfaceNormal, tangent);                 // perpendicular to both normal and tangent
+Vector3 tangent = Vector3.Cross(referenceUp, surfaceNormal).normalized;   // лежит на поверхности
+Vector3 binormal = Vector3.Cross(surfaceNormal, tangent);                 // перпендикулярен нормали и касательной
 ```
 
-`surfaceNormal` points straight out from the surface, `tangent` runs along the surface (great for sliding or UVs), and `binormal` completes the orthogonal trio. Together they describe the local surface orientation.
+`surfaceNormal` направлен прямо от поверхности, `tangent` проходит вдоль поверхности (удобен для скольжения или UV), а `binormal` завершает ортогональную тройку. Вместе они описывают локальную ориентацию поверхности.
 
-## Magnitude and Normalization
+## Длина и нормализация
 
 ```csharp
 Vector3 velocity = rigidbody.velocity;
-float speed = velocity.magnitude;        // length
-float sqrSpeed = velocity.sqrMagnitude;  // cheaper length^2
+float speed = velocity.magnitude;        // длина вектора
+float sqrSpeed = velocity.sqrMagnitude;  // длина^2 (дешевле)
 
-Vector3 direction = velocity.normalized; // zero-safe normalized copy
-Vector3 unit = Vector3.Normalize(velocity); // static variant
+Vector3 direction = velocity.normalized; // нормализованная копия (безопасна при нулевом векторе)
+Vector3 unit = Vector3.Normalize(velocity); // статический вариант
 ```
 
-Use `sqrMagnitude` to avoid square roots when comparing distances. Normalize before projecting or rotating to maintain unit-length directions.
+Используйте `sqrMagnitude` для сравнения расстояний без вычисления квадратного корня. Нормализуйте вектор перед проецированием или поворотом, чтобы сохранить единичную длину.
 
-## Movement & Interpolation Helpers
+## Вспомогательные методы для движения и интерполяции
 
 ```csharp
-// Move toward a goal at constant speed
+// Движение к цели с постоянной скоростью
 transform.position = Vector3.MoveTowards(transform.position, targetPos, moveSpeed * Time.deltaTime);
 
-// Interpolate with easing control
+// Интерполяция с управлением плавностью
 Vector3 mid = Vector3.Lerp(startPos, endPos, t);
-Vector3 smooth = Vector3.Slerp(startDir, endDir, t); // spherical interpolation for directions
+Vector3 smooth = Vector3.Slerp(startDir, endDir, t); // сферическая интерполяция для направлений
 
-// Clamp how far an input vector can reach
+// Ограничение длины вектора ввода
 Vector3 input = new Vector3(h, 0f, v);
 Vector3 limited = Vector3.ClampMagnitude(input, 1f);
 ```
 
-`Lerp` works for positions and scaled directions; prefer `Slerp` when keeping constant angular velocity between two unit vectors.
+`Lerp` подходит для позиций и масштабированных направлений; используйте `Slerp`, когда нужна постоянная угловая скорость между двумя единичными векторами.
 
-## Projection, Reflection, and Planar Work
+## Проекция, отражение и работа в плоскости
 
 ```csharp
-// Project onto a plane (e.g., remove vertical component)
+// Проекция на плоскость (например, удаление вертикальной составляющей)
 Vector3 planar = Vector3.ProjectOnPlane(transform.forward, Vector3.up);
 
-// Reflect incoming direction around a surface normal
+// Отражение входящего направления от нормали поверхности
 Vector3 bounceDir = Vector3.Reflect(incomingDir, hitNormal);
 
-// Align camera forward to the horizontal plane
+// Выравнивание направления камеры по горизонтальной плоскости
 Vector3 flatForward = new Vector3(camera.forward.x, 0f, camera.forward.z).normalized;
 ```
 
-Projection and reflection are staples for physics responses, sliding, and camera alignment.
+Проекция и отражение — основные инструменты для физических откликов, скольжения и выравнивания камеры.
 
-## Debugging & Best Practices
+## Отладка и лучшие практики
 
-- Store frequently used directions (`Vector3.up`, `Vector3.forward`) to avoid repeated property calls in tight loops.
-- Prefer `Vector3.Distance` or `Vector3.SqrMagnitude` for distance checks rather than manually subtracting and measuring.
-- Visualize vectors with `Debug.DrawLine` or `Debug.DrawRay` while tuning AI paths or movement.
-- Avoid mixing local and world vectors—convert using `TransformDirection`, `InverseTransformDirection`, or their point equivalents before combining.
-- Keep inputs normalized when feeding trig functions, quaternion constructors, or movement code expecting unit vectors.
+- Сохраняйте часто используемые направления (`Vector3.up`, `Vector3.forward`) в переменные, чтобы избежать повторных обращений к свойствам в критичных циклах.
+- Предпочитайте `Vector3.Distance` или `Vector3.SqrMagnitude` для проверки расстояний вместо ручного вычитания и измерения.
+- Визуализируйте векторы с помощью `Debug.DrawLine` или `Debug.DrawRay` при настройке путей ИИ или движения.
+- Не смешивайте локальные и мировые векторы — конвертируйте их через `TransformDirection`, `InverseTransformDirection` или их аналоги для точек перед объединением.
+- Нормализуйте входные данные при передаче в тригонометрические функции, конструкторы кватернионов или код движения, ожидающий единичные векторы.
 
-A solid grasp of `Vector3` operations speeds up every gameplay feature that depends on position, direction, or movement. Lean on these helpers to write expressive, intention-revealing code.
+Уверенное владение операциями `Vector3` ускоряет разработку любого игрового функционала, связанного с позицией, направлением или движением. Используйте эти вспомогательные методы, чтобы писать выразительный и понятный код.

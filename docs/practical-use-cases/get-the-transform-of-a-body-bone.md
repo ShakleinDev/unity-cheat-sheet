@@ -1,15 +1,15 @@
 # Unity Get Bone Transform - Animator.GetBoneTransform
 
-Access a specific humanoid bone (e.g., head, hand, spine) to attach props, aim weapons, or read pose data. Unity’s Humanoid rig exposes these through `Animator.GetBoneTransform` once the avatar is initialized.
+Получите доступ к конкретной кости гуманоида (например, голова, рука, позвоночник), чтобы крепить реквизит, прицеливаться оружием или считывать данные позы. Humanoid-риг Unity предоставляет доступ к костям через `Animator.GetBoneTransform` после инициализации аватара.
 
-## Behaviour
+## Поведение
 
-1. Cache the `Animator` reference on start.
-2. Query `GetBoneTransform` with the desired `HumanBodyBones` enum value.
-3. Validate the result—returns `null` if the avatar isn’t humanoid or the bone is not mapped.
-4. Use the bone transform to parent objects, align effects, or sample world position/rotation each frame.
+1. Закэшировать ссылку на `Animator` при старте.
+2. Вызвать `GetBoneTransform` с нужным значением перечисления `HumanBodyBones`.
+3. Проверить результат — возвращает `null`, если аватар не является гуманоидом или кость не замаплена.
+4. Использовать трансформ кости для привязки объектов, выравнивания эффектов или считывания мировой позиции/вращения каждый кадр.
 
-## Example
+## Пример
 
 ```csharp
 using UnityEngine;
@@ -33,7 +33,7 @@ public class AttachToBone : MonoBehaviour
 
         if (!boneTransform)
         {
-            Debug.LogWarning($"Bone {bone} not found on avatar", this);
+            Debug.LogWarning($"Кость {bone} не найдена на аватаре", this);
             enabled = false;
             return;
         }
@@ -43,7 +43,7 @@ public class AttachToBone : MonoBehaviour
 
     private void LateUpdate()
     {
-        // Optional: ensure attachment stays aligned if you can't parent directly
+        // Опционально: убедиться, что прикреплённый объект остаётся выровненным, если нельзя напрямую сделать его дочерним
         if (!objectToAttach) return;
         objectToAttach.localPosition = Vector3.zero;
         objectToAttach.localRotation = Quaternion.identity;
@@ -51,9 +51,9 @@ public class AttachToBone : MonoBehaviour
 }
 ```
 
-### Notes
+### Примечания
 
-- Works only with Humanoid avatars; for Generic rigs, expose transforms manually or via animation events.
-- Call `GetBoneTransform` after the animator has finished initializing (e.g., in `Awake`/`Start` or later) to avoid null returns.
-- Use `LateUpdate` when adjusting attachments so they follow the fully evaluated animation pose.
-- Cache bone transforms rather than calling `GetBoneTransform` every frame—it’s inexpensive but avoids unnecessary lookups.
+- Работает только с Humanoid-аватарами; для Generic-ригов открывайте трансформы вручную или через события анимации.
+- Вызывайте `GetBoneTransform` после завершения инициализации аниматора (например, в `Awake`/`Start` или позже), чтобы избежать возврата null.
+- Используйте `LateUpdate` при корректировке прикреплённых объектов, чтобы они следовали за полностью вычисленной позой анимации.
+- Кэшируйте трансформы костей вместо вызова `GetBoneTransform` каждый кадр — это недорогая операция, но позволяет избежать лишних обращений.

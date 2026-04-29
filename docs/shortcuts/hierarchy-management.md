@@ -1,11 +1,11 @@
-# Unity Hierarchy Management Shortcuts
+# Горячие клавиши управления иерархией Unity
 
 ```
-CTRL/CMD + SHIFT + N - Create empty GameObject
-ALT + SHIFT + N - Create empty child GameObject
-CTRL/CMD + D - Duplicate selected
-CTRL/CMD + ALT + F - Frame selected object
-F2 - Rename selected
-Delete - Delete selected
+CTRL/CMD + SHIFT + N - Создать пустой GameObject
+ALT + SHIFT + N - Создать пустой дочерний GameObject
+CTRL/CMD + D - Дублировать выбранное
+CTRL/CMD + ALT + F - Сфокусировать вид на выбранном объекте
+F2 - Переименовать выбранное
+Delete - Удалить выбранное
 ```
 

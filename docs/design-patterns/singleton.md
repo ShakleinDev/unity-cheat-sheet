@@ -1,7 +1,7 @@
-# Unity Singleton Pattern - Global Instance Access
+# Unity Паттерн Синглтон — Глобальный доступ к экземпляру
 
 ```csharp
-// Define singleton class
+// Определяем класс синглтона
 public class SingletonClass: MonoBehaviour {
     private static SingletonClass instance;
 
@@ -19,7 +19,7 @@ public class SingletonClass: MonoBehaviour {
     }
 }
 
-// Use it in another class
+// Используем синглтон в другом классе
 public class AnotherClass: MonoBehaviour {
 
     private void Awake() {

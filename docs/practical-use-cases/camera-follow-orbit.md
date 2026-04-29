@@ -1,17 +1,17 @@
-# Unity Camera Follow and Orbit - Third Person Camera
+# Unity — Следование камеры и орбитальное вращение (камера от третьего лица)
 
-Smoothly follow a target while allowing mouse or controller input to orbit around it. Combine `Vector3.SmoothDamp` for damped position tracking with `Quaternion.AngleAxis` to accumulate yaw and pitch angles.
+Плавно следуйте за целью, позволяя мыши или геймпаду вращать камеру вокруг неё. Используйте `Vector3.SmoothDamp` для плавного отслеживания позиции и `Quaternion.AngleAxis` для накопления углов поворота по горизонтали (yaw) и вертикали (pitch).
 
-## Behaviour
+## Поведение
 
-1. Read orbit input (mouse X/Y, right stick, or custom axes).
-2. Accumulate yaw and pitch, clamping pitch to avoid flipping.
-3. Convert the yaw/pitch pair into a rotation using `Quaternion.AngleAxis`.
-4. Rotate the follow offset by that rotation to get the desired camera position.
-5. Smoothly move the camera toward that position with `Vector3.SmoothDamp`.
-6. Look back at the target so the camera always faces it.
+1. Считываем входные данные для орбиты (ось X/Y мыши, правый стик или произвольные оси).
+2. Накапливаем yaw и pitch, ограничивая pitch, чтобы камера не переворачивалась.
+3. Преобразуем пару yaw/pitch во вращение с помощью `Quaternion.AngleAxis`.
+4. Применяем вращение к вектору смещения камеры, получая желаемую позицию.
+5. Плавно перемещаем камеру к этой позиции с помощью `Vector3.SmoothDamp`.
+6. Поворачиваем камеру обратно к цели, чтобы она всегда смотрела на неё.
 
-## Example
+## Пример
 
 ```csharp
 using UnityEngine;
@@ -24,16 +24,16 @@ public class OrbitFollowCamera : MonoBehaviour
     [SerializeField] private float orbitSpeed = 120f;
     [SerializeField] private Vector2 pitchLimits = new Vector2(-30f, 60f);
 
-    private Vector3 velocity;    // reused by SmoothDamp
-    private float yaw;           // around global Y (left/right orbit)
-    private float pitch;         // around local X (up/down orbit)
+    private Vector3 velocity;    // переиспользуется в SmoothDamp
+    private float yaw;           // вращение вокруг глобальной оси Y (орбита влево/вправо)
+    private float pitch;         // вращение вокруг локальной оси X (орбита вверх/вниз)
 
     private void Awake()
     {
         if (!target)
         {
             enabled = false;
-            Debug.LogWarning("OrbitFollowCamera disabled: target not assigned.", this);
+            Debug.LogWarning("OrbitFollowCamera отключена: цель не назначена.", this);
             return;
         }
 
@@ -64,10 +64,10 @@ public class OrbitFollowCamera : MonoBehaviour
 }
 ```
 
-### Notes
+### Примечания
 
-- `CameraHorizontal` / `CameraVertical` input axes are optional right-stick mappings—remove them if you only use mouse input.
-- Tighten or loosen the orbit responsiveness by scaling `orbitSpeed` and `followSmoothTime`.
-- Changing `followOffset` in play mode lets you feel how different camera rigs behave (over-the-shoulder vs. top-down).
-- Use `LateUpdate` to follow targets that move in `Update`, ensuring the camera reacts after the character has moved.
-- Swap `Vector3.SmoothDamp` for `Vector3.MoveTowards` if you prefer instant snapping without easing.
+- Оси `CameraHorizontal` / `CameraVertical` — опциональные оси правого стика; удалите их, если используете только мышь.
+- Регулируйте отзывчивость орбиты, изменяя `orbitSpeed` и `followSmoothTime`.
+- Изменение `followOffset` в режиме игры позволяет почувствовать, как ведут себя разные позиции камеры (вид через плечо vs. вид сверху).
+- Используйте `LateUpdate` для слежения за целями, которые двигаются в `Update`, — это гарантирует, что камера реагирует после того, как персонаж уже переместился.
+- Замените `Vector3.SmoothDamp` на `Vector3.MoveTowards`, если хотите мгновенное переключение без сглаживания.

@@ -1,12 +1,12 @@
-# Unity Command Pattern - Undo/Redo System
+# Паттерн Команда в Unity — Система Отмены/Повтора действий
 
 ```csharp
-// Command interface
+// Интерфейс команды
 public interface ICommand {
     void Execute();
 }
 
-// Concrete command classes
+// Конкретные классы команд
 public class MoveCommand : ICommand {
     private Transform transform;
     private Vector3 direction;
@@ -23,7 +23,7 @@ public class MoveCommand : ICommand {
     }
 }
 
-// Invoker class
+// Класс инициатора (Invoker)
 public class CommandInvoker {
     private Stack<ICommand> commandStack = new Stack<ICommand>();
 
@@ -35,12 +35,12 @@ public class CommandInvoker {
     public void Undo() {
         if (commandStack.Count > 0) {
             var command = commandStack.Pop();
-            // Implement an undo method if necessary
+            // При необходимости реализуйте метод отмены
         }
     }
 }
 
-// Usage
+// Использование
 public class CommandUser : MonoBehaviour {
     private CommandInvoker invoker = new CommandInvoker();
 
@@ -50,7 +50,7 @@ public class CommandUser : MonoBehaviour {
             invoker.ExecuteCommand(moveUp);
         }
 
-        // Add other directions and invoker.Undo() for undos
+        // Добавьте другие направления и invoker.Undo() для отмены действий
     }
 }
 ```

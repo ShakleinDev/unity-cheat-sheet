@@ -1,92 +1,92 @@
-# Unity Collisions and Triggers - OnCollisionEnter and OnTriggerEnter
+# Unity Коллизии и Триггеры - OnCollisionEnter и OnTriggerEnter
 
-Unity provides two types of collision detection: **Collisions** (physics-based) and **Triggers** (overlap detection).
+Unity предоставляет два типа определения столкновений: **Коллизии** (на основе физики) и **Триггеры** (определение перекрытия).
 
-## Collision vs Trigger: When to Use Each
+## Коллизия vs Триггер: Когда что использовать
 
-| Use Case | Type | Example |
-|----------|------|---------|
-| Physical interactions | **Collision** | Player hitting a wall, ball bouncing |
-| Detecting overlap without physics | **Trigger** | Picking up coins, entering zones |
-| Damage on impact | **Collision** | Bullet hitting enemy with knockback |
-| Damage without impact | **Trigger** | Walking through lava, laser beam |
+| Случай использования | Тип | Пример |
+|----------------------|-----|--------|
+| Физические взаимодействия | **Коллизия** | Игрок ударяется о стену, мяч отскакивает |
+| Определение перекрытия без физики | **Триггер** | Подбор монет, вход в зону |
+| Урон при столкновении | **Коллизия** | Пуля попадает во врага с отдачей |
+| Урон без столкновения | **Триггер** | Ходьба по лаве, лазерный луч |
 
-## Requirements
+## Требования
 
-For collision/trigger events to fire, you need:
+Чтобы события коллизии/триггера срабатывали, необходимо:
 
-| Requirement | Collision Events | Trigger Events |
-|-------------|------------------|----------------|
-| Collider on both objects | Yes | Yes |
-| Rigidbody on at least one | Yes | Yes |
-| "Is Trigger" checked | No | Yes (on at least one) |
+| Требование | События коллизии | События триггера |
+|------------|------------------|------------------|
+| Коллайдер на обоих объектах | Да | Да |
+| Rigidbody хотя бы на одном | Да | Да |
+| Включён "Is Trigger" | Нет | Да (хотя бы на одном) |
 
 ---
 
-## 3D Collision Events
+## 3D События Коллизии
 
-Called when colliders physically collide. Objects will bounce/interact based on physics.
+Вызываются при физическом столкновении коллайдеров. Объекты отскакивают/взаимодействуют на основе физики.
 
 ### OnCollisionEnter
 
-Called once when collision begins.
+Вызывается один раз при начале столкновения.
 
 ```csharp
 void OnCollisionEnter(Collision collision)
 {
-    Debug.Log("Hit: " + collision.gameObject.name);
+    Debug.Log("Удар: " + collision.gameObject.name);
 }
 ```
 
 ### OnCollisionStay
 
-Called every frame while collision continues.
+Вызывается каждый кадр, пока столкновение продолжается.
 
 ```csharp
 void OnCollisionStay(Collision collision)
 {
-    Debug.Log("Still touching: " + collision.gameObject.name);
+    Debug.Log("Всё ещё касается: " + collision.gameObject.name);
 }
 ```
 
 ### OnCollisionExit
 
-Called once when collision ends.
+Вызывается один раз при завершении столкновения.
 
 ```csharp
 void OnCollisionExit(Collision collision)
 {
-    Debug.Log("Stopped touching: " + collision.gameObject.name);
+    Debug.Log("Прекратил касаться: " + collision.gameObject.name);
 }
 ```
 
-### Collision Class Properties
+### Свойства класса Collision
 
-The `Collision` parameter provides detailed collision information:
+Параметр `Collision` предоставляет подробную информацию о столкновении:
 
 ```csharp
 void OnCollisionEnter(Collision collision)
 {
-    // The GameObject we collided with
+    // GameObject, с которым столкнулись
     GameObject other = collision.gameObject;
     
-    // The Rigidbody we collided with (can be null)
+    // Rigidbody, с которым столкнулись (может быть null)
     Rigidbody otherRb = collision.rigidbody;
     
-    // The Collider we collided with
+    // Коллайдер, с которым столкнулись
     Collider otherCollider = collision.collider;
     
-    // Relative velocity of the collision
+    // Относительная скорость столкновения
     Vector3 impactVelocity = collision.relativeVelocity;
     float impactForce = impactVelocity.magnitude;
     
-    // Total impulse applied during collision
+    // Суммарный импульс, применённый при столкновении
     Vector3 impulse = collision.impulse;
     
-    // Number of contact points
+    // Количество точек контакта
     int contactCount = collision.contactCount;
     
-    // First contact point
+    // Первая точка контакта
     if (contactCount > 0)
     {
         ContactPoint contact = collision.GetContact(0);
@@ -96,7 +96,7 @@ void OnCollisionEnter(Collision collision)
 }
 ```
 
-### Practical Example: Damage on Impact
+### Практический пример: Урон при столкновении
 
 ```csharp
 public class DamageOnCollision : MonoBehaviour
@@ -112,7 +112,7 @@ public class DamageOnCollision : MonoBehaviour
         {
             float damage = impactForce * damageMultiplier;
             
-            // Try to get Health component from collided object
+            // Попытка получить компонент Health у объекта столкновения
             Health health = collision.gameObject.GetComponent<Health>();
             if (health != null)
             {
@@ -125,46 +125,46 @@ public class DamageOnCollision : MonoBehaviour
 
 ---
 
-## 3D Trigger Events
+## 3D События Триггера
 
-Called when colliders overlap. No physics response occurs - objects pass through each other.
+Вызываются при перекрытии коллайдеров. Физическая реакция не происходит — объекты проходят сквозь друг друга.
 
-> **Setup:** Check "Is Trigger" on at least one of the colliders in the Inspector.
+> **Настройка:** Включите "Is Trigger" хотя бы на одном из коллайдеров в Инспекторе.
 
 ### OnTriggerEnter
 
-Called once when another collider enters the trigger.
+Вызывается один раз, когда другой коллайдер входит в триггер.
 
 ```csharp
 void OnTriggerEnter(Collider other)
 {
-    Debug.Log(other.gameObject.name + " entered trigger");
+    Debug.Log(other.gameObject.name + " вошёл в триггер");
 }
 ```
 
 ### OnTriggerStay
 
-Called every frame while another collider is inside the trigger.
+Вызывается каждый кадр, пока другой коллайдер находится внутри триггера.
 
 ```csharp
 void OnTriggerStay(Collider other)
 {
-    Debug.Log(other.gameObject.name + " is inside trigger");
+    Debug.Log(other.gameObject.name + " находится внутри триггера");
 }
 ```
 
 ### OnTriggerExit
 
-Called once when another collider exits the trigger.
+Вызывается один раз, когда другой коллайдер покидает триггер.
 
 ```csharp
 void OnTriggerExit(Collider other)
 {
-    Debug.Log(other.gameObject.name + " exited trigger");
+    Debug.Log(other.gameObject.name + " вышел из триггера");
 }
 ```
 
-### Practical Example: Pickup Item
+### Практический пример: Подбираемый предмет
 
 ```csharp
 public class PickupItem : MonoBehaviour
@@ -174,30 +174,30 @@ public class PickupItem : MonoBehaviour
 
     void OnTriggerEnter(Collider other)
     {
-        // Only respond to player
+        // Реагировать только на игрока
         if (other.CompareTag("Player"))
         {
-            // Add coins to player
+            // Добавить монеты игроку
             PlayerScore score = other.GetComponent<PlayerScore>();
             if (score != null)
             {
                 score.AddCoins(coinValue);
             }
             
-            // Play sound at pickup location
+            // Воспроизвести звук в точке подбора
             if (pickupSound != null)
             {
                 AudioSource.PlayClipAtPoint(pickupSound, transform.position);
             }
             
-            // Destroy pickup
+            // Уничтожить предмет
             Destroy(gameObject);
         }
     }
 }
 ```
 
-### Practical Example: Damage Zone
+### Практический пример: Зона урона
 
 ```csharp
 public class DamageZone : MonoBehaviour
@@ -217,53 +217,53 @@ public class DamageZone : MonoBehaviour
 
 ---
 
-## 2D Collision Events
+## 2D События Коллизии
 
-For 2D games, use the 2D variants with `Collision2D` and `Collider2D` types.
+Для 2D игр используйте 2D-варианты с типами `Collision2D` и `Collider2D`.
 
-### Collision Events (2D)
+### События коллизии (2D)
 
 ```csharp
 void OnCollisionEnter2D(Collision2D collision)
 {
-    Debug.Log("Hit: " + collision.gameObject.name);
+    Debug.Log("Удар: " + collision.gameObject.name);
     
-    // 2D-specific properties
+    // Свойства, специфичные для 2D
     Vector2 contactPoint = collision.GetContact(0).point;
     Vector2 contactNormal = collision.GetContact(0).normal;
 }
 
 void OnCollisionStay2D(Collision2D collision)
 {
-    Debug.Log("Still touching: " + collision.gameObject.name);
+    Debug.Log("Всё ещё касается: " + collision.gameObject.name);
 }
 
 void OnCollisionExit2D(Collision2D collision)
 {
-    Debug.Log("Stopped touching: " + collision.gameObject.name);
+    Debug.Log("Прекратил касаться: " + collision.gameObject.name);
 }
 ```
 
-### Trigger Events (2D)
+### События триггера (2D)
 
 ```csharp
 void OnTriggerEnter2D(Collider2D other)
 {
-    Debug.Log(other.gameObject.name + " entered trigger");
+    Debug.Log(other.gameObject.name + " вошёл в триггер");
 }
 
 void OnTriggerStay2D(Collider2D other)
 {
-    Debug.Log(other.gameObject.name + " is inside trigger");
+    Debug.Log(other.gameObject.name + " находится внутри триггера");
 }
 
 void OnTriggerExit2D(Collider2D other)
 {
-    Debug.Log(other.gameObject.name + " exited trigger");
+    Debug.Log(other.gameObject.name + " вышел из триггера");
 }
 ```
 
-### 2D Platformer Example: Ground Check
+### Пример 2D-платформера: Проверка земли
 
 ```csharp
 public class GroundCheck : MonoBehaviour
@@ -290,56 +290,56 @@ public class GroundCheck : MonoBehaviour
 
 ---
 
-## Common Patterns
+## Общие паттерны
 
-### Tag Checking
+### Проверка тегов
 
-Filter collisions by tag using `CompareTag()` (faster than `==`):
+Фильтрация коллизий по тегу с помощью `CompareTag()` (быстрее, чем `==`):
 
 ```csharp
 void OnCollisionEnter(Collision collision)
 {
     if (collision.gameObject.CompareTag("Enemy"))
     {
-        // Handle enemy collision
+        // Обработка столкновения с врагом
     }
     else if (collision.gameObject.CompareTag("Pickup"))
     {
-        // Handle pickup collision
+        // Обработка столкновения с предметом
     }
 }
 ```
 
-### Layer Checking
+### Проверка слоёв
 
-Filter by layer for more complex scenarios:
+Фильтрация по слою для более сложных сценариев:
 
 ```csharp
 void OnTriggerEnter(Collider other)
 {
-    // Check if object is on "Interactable" layer
+    // Проверить, находится ли объект на слое "Interactable"
     if (other.gameObject.layer == LayerMask.NameToLayer("Interactable"))
     {
-        // Handle interaction
+        // Обработка взаимодействия
     }
 }
 ```
 
-### Getting Components
+### Получение компонентов
 
-Access components on the collided object:
+Доступ к компонентам на столкнувшемся объекте:
 
 ```csharp
 void OnCollisionEnter(Collision collision)
 {
-    // Try to get a component (returns null if not found)
+    // Попытка получить компонент (возвращает null, если не найден)
     Enemy enemy = collision.gameObject.GetComponent<Enemy>();
     if (enemy != null)
     {
         enemy.TakeDamage(10);
     }
     
-    // TryGetComponent is slightly more efficient (Unity 2019.2+)
+    // TryGetComponent немного эффективнее (Unity 2019.2+)
     if (collision.gameObject.TryGetComponent<Enemy>(out Enemy e))
     {
         e.TakeDamage(10);
@@ -347,17 +347,17 @@ void OnCollisionEnter(Collision collision)
 }
 ```
 
-### Destroy on Collision
+### Уничтожение при столкновении
 
 ```csharp
 void OnCollisionEnter(Collision collision)
 {
     if (collision.gameObject.CompareTag("Enemy"))
     {
-        // Destroy the enemy
+        // Уничтожить врага
         Destroy(collision.gameObject);
         
-        // Destroy this object (e.g., bullet)
+        // Уничтожить этот объект (например, пулю)
         Destroy(gameObject);
     }
 }
@@ -365,145 +365,145 @@ void OnCollisionEnter(Collision collision)
 
 ---
 
-## Collision Matrix
+## Матрица Коллизий
 
-Not all collider combinations generate events. Here's a simplified reference:
+Не все комбинации коллайдеров генерируют события. Упрощённая справка:
 
-### Collision Events (OnCollisionEnter, etc.)
+### События коллизии (OnCollisionEnter и др.)
 
-| Object A | Object B | Events Fire? |
-|----------|----------|--------------|
-| Rigidbody | Static Collider | Yes |
-| Rigidbody | Rigidbody | Yes |
-| Rigidbody | Kinematic Rigidbody | Yes |
-| Kinematic | Static Collider | No |
-| Kinematic | Kinematic | No |
-| Static | Static | No |
+| Объект А | Объект Б | События срабатывают? |
+|----------|----------|----------------------|
+| Rigidbody | Статический коллайдер | Да |
+| Rigidbody | Rigidbody | Да |
+| Rigidbody | Кинематический Rigidbody | Да |
+| Кинематический | Статический коллайдер | Нет |
+| Кинематический | Кинематический | Нет |
+| Статический | Статический | Нет |
 
-### Trigger Events (OnTriggerEnter, etc.)
+### События триггера (OnTriggerEnter и др.)
 
-| Object A | Object B | Events Fire? |
-|----------|----------|--------------|
-| Rigidbody Trigger | Any Collider | Yes |
-| Kinematic Trigger | Any Collider | Yes |
-| Static Trigger | Rigidbody/Kinematic | Yes |
-| Static Trigger | Static Collider | No |
+| Объект А | Объект Б | События срабатывают? |
+|----------|----------|----------------------|
+| Rigidbody-триггер | Любой коллайдер | Да |
+| Кинематический триггер | Любой коллайдер | Да |
+| Статический триггер | Rigidbody/Кинематический | Да |
+| Статический триггер | Статический коллайдер | Нет |
 
-### Collider Type Reference
+### Справка по типам коллайдеров
 
-| Type | Rigidbody | Is Kinematic | Is Trigger |
-|------|-----------|--------------|------------|
-| Static Collider | None | - | Off |
-| Rigidbody Collider | Yes | Off | Off |
-| Kinematic Collider | Yes | On | Off |
-| Static Trigger | None | - | On |
-| Rigidbody Trigger | Yes | Off | On |
-| Kinematic Trigger | Yes | On | On |
+| Тип | Rigidbody | Is Kinematic | Is Trigger |
+|-----|-----------|--------------|------------|
+| Статический коллайдер | Нет | - | Выкл |
+| Коллайдер с Rigidbody | Да | Выкл | Выкл |
+| Кинематический коллайдер | Да | Вкл | Выкл |
+| Статический триггер | Нет | - | Вкл |
+| Rigidbody-триггер | Да | Выкл | Вкл |
+| Кинематический триггер | Да | Вкл | Вкл |
 
 ---
 
-## Common Mistakes
+## Распространённые ошибки
 
-### 1. Missing Rigidbody
+### 1. Отсутствует Rigidbody
 
-**Problem:** No collision events firing.
+**Проблема:** События коллизии не срабатывают.
 
-**Solution:** At least one object needs a Rigidbody (or Rigidbody2D for 2D).
+**Решение:** Хотя бы один объект должен иметь Rigidbody (или Rigidbody2D для 2D).
 
 ```csharp
-// This script won't receive collision events if neither 
-// this object nor the collided object has a Rigidbody
-void OnCollisionEnter(Collision collision) { } // Never called!
+// Этот скрипт не будет получать события коллизии, если ни этот объект,
+// ни столкнувшийся объект не имеют Rigidbody
+void OnCollisionEnter(Collision collision) { } // Никогда не вызывается!
 ```
 
-### 2. Both Objects Are Kinematic
+### 2. Оба объекта кинематические
 
-**Problem:** Two kinematic rigidbodies don't generate collision events.
+**Проблема:** Два кинематических Rigidbody не генерируют события коллизии.
 
-**Solution:** Make at least one non-kinematic, or use triggers instead.
+**Решение:** Сделайте хотя бы один некинематическим, или используйте триггеры.
 
-### 3. Trigger Not Enabled
+### 3. Триггер не включён
 
-**Problem:** `OnTriggerEnter` not being called.
+**Проблема:** `OnTriggerEnter` не вызывается.
 
-**Solution:** Check "Is Trigger" on at least one collider in the Inspector.
+**Решение:** Включите "Is Trigger" хотя бы на одном коллайдере в Инспекторе.
 
-### 4. Wrong 2D/3D Methods
+### 4. Перепутаны методы 2D/3D
 
-**Problem:** Using `OnCollisionEnter` in a 2D game.
+**Проблема:** Использование `OnCollisionEnter` в 2D игре.
 
-**Solution:** Use `OnCollisionEnter2D` with 2D colliders.
+**Решение:** Используйте `OnCollisionEnter2D` с 2D коллайдерами.
 
 ```csharp
-// WRONG for 2D games
+// НЕВЕРНО для 2D игр
 void OnCollisionEnter(Collision collision) { }
 
-// CORRECT for 2D games  
+// ВЕРНО для 2D игр  
 void OnCollisionEnter2D(Collision2D collision) { }
 ```
 
-### 5. Layer Collision Matrix
+### 5. Матрица коллизий слоёв
 
-**Problem:** Objects on certain layers don't collide.
+**Проблема:** Объекты на определённых слоях не сталкиваются.
 
-**Solution:** Check **Edit > Project Settings > Physics > Layer Collision Matrix**.
+**Решение:** Проверьте **Edit > Project Settings > Physics > Layer Collision Matrix**.
 
-### 6. Scale Affecting Colliders
+### 6. Масштаб влияет на коллайдеры
 
-**Problem:** Colliders not matching visual mesh after scaling.
+**Проблема:** Коллайдеры не совпадают с визуальным мешем после масштабирования.
 
-**Solution:** Apply scale in modeling software, or manually adjust collider size.
+**Решение:** Примените масштаб в программе моделирования или вручную скорректируйте размер коллайдера.
 
-### 7. Method Signature Wrong
+### 7. Неверная сигнатура метода
 
-**Problem:** Collision methods not being called.
+**Проблема:** Методы коллизии не вызываются.
 
-**Solution:** Ensure exact method signature. Common errors:
+**Решение:** Убедитесь в точной сигнатуре метода. Частые ошибки:
 
 ```csharp
-// WRONG - lowercase 'c'
+// НЕВЕРНО - строчная 'c'
 void onCollisionEnter(Collision collision) { }
 
-// WRONG - missing parameter
+// НЕВЕРНО - отсутствует параметр
 void OnCollisionEnter() { }
 
-// WRONG - wrong parameter type
-void OnCollisionEnter(Collider other) { } // Should be Collision
+// НЕВЕРНО - неверный тип параметра
+void OnCollisionEnter(Collider other) { } // Должен быть Collision
 
-// CORRECT
+// ВЕРНО
 void OnCollisionEnter(Collision collision) { }
 ```
 
 ---
 
-## Quick Reference
+## Краткая Справка
 
-### 3D Methods
+### 3D Методы
 
-| Method | Parameter | When Called |
-|--------|-----------|-------------|
-| `OnCollisionEnter(Collision)` | `Collision` | Collision begins |
-| `OnCollisionStay(Collision)` | `Collision` | Every frame during collision |
-| `OnCollisionExit(Collision)` | `Collision` | Collision ends |
-| `OnTriggerEnter(Collider)` | `Collider` | Enters trigger |
-| `OnTriggerStay(Collider)` | `Collider` | Every frame inside trigger |
-| `OnTriggerExit(Collider)` | `Collider` | Exits trigger |
+| Метод | Параметр | Когда вызывается |
+|-------|----------|------------------|
+| `OnCollisionEnter(Collision)` | `Collision` | Начало столкновения |
+| `OnCollisionStay(Collision)` | `Collision` | Каждый кадр во время столкновения |
+| `OnCollisionExit(Collision)` | `Collision` | Конец столкновения |
+| `OnTriggerEnter(Collider)` | `Collider` | Вход в триггер |
+| `OnTriggerStay(Collider)` | `Collider` | Каждый кадр внутри триггера |
+| `OnTriggerExit(Collider)` | `Collider` | Выход из триггера |
 
-### 2D Methods
+### 2D Методы
 
-| Method | Parameter | When Called |
-|--------|-----------|-------------|
-| `OnCollisionEnter2D(Collision2D)` | `Collision2D` | Collision begins |
-| `OnCollisionStay2D(Collision2D)` | `Collision2D` | Every frame during collision |
-| `OnCollisionExit2D(Collision2D)` | `Collision2D` | Collision ends |
-| `OnTriggerEnter2D(Collider2D)` | `Collider2D` | Enters trigger |
-| `OnTriggerStay2D(Collider2D)` | `Collider2D` | Every frame inside trigger |
-| `OnTriggerExit2D(Collider2D)` | `Collider2D` | Exits trigger |
+| Метод | Параметр | Когда вызывается |
+|-------|----------|------------------|
+| `OnCollisionEnter2D(Collision2D)` | `Collision2D` | Начало столкновения |
+| `OnCollisionStay2D(Collision2D)` | `Collision2D` | Каждый кадр во время столкновения |
+| `OnCollisionExit2D(Collision2D)` | `Collision2D` | Конец столкновения |
+| `OnTriggerEnter2D(Collider2D)` | `Collider2D` | Вход в триггер |
+| `OnTriggerStay2D(Collider2D)` | `Collider2D` | Каждый кадр внутри триггера |
+| `OnTriggerExit2D(Collider2D)` | `Collider2D` | Выход из триггера |
 
 ---
 
-## See Also
+## См. также
 
-- [Rigidbody](rigidbody.md) - Physics body configuration
-- [Raycast](raycast.md) - Ray-based collision detection
-- [Ignore Collision](ignore-collision.md) - Disabling specific collisions
+- [Rigidbody](rigidbody.md) - Настройка физического тела
+- [Raycast](raycast.md) - Определение столкновений на основе лучей
+- [Ignore Collision](ignore-collision.md) - Отключение определённых столкновений

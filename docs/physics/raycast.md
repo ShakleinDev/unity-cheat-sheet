@@ -1,8 +1,8 @@
-# Unity Raycast - Physics Ray Detection
+# Unity Raycast - Обнаружение Объектов с Помощью Лучей
 
-Physics raycasts let you probe the world along a straight line to discover what you would hit. They are a foundational building block for many systems—targeting, line of sight, shooting, interaction prompts, AI perception, and more. Understanding the different overloads, hit data, and performance implications is key to writing reliable gameplay code.
+Физические рейкасты позволяют исследовать мир вдоль прямой линии, чтобы определить, что находится на пути. Они являются основным строительным блоком для множества систем — прицеливания, линии обзора, стрельбы, подсказок взаимодействия, восприятия ИИ и многого другого. Понимание различных перегрузок, данных о попаданиях и влияния на производительность — ключ к написанию надёжного игрового кода.
 
-## Core Example
+## Базовый Пример
 
 ```csharp
 using UnityEngine;
@@ -20,7 +20,7 @@ public class ForwardScanner : MonoBehaviour
         if (Physics.Raycast(origin, direction, out RaycastHit hitInfo, maxDistance, obstacleLayers))
         {
             Debug.DrawRay(origin, direction * hitInfo.distance, Color.yellow);
-            Debug.Log($"Hit {hitInfo.collider.name} at {hitInfo.point}");
+            Debug.Log($"Попадание в {hitInfo.collider.name} в точке {hitInfo.point}");
         }
         else
         {
@@ -30,42 +30,42 @@ public class ForwardScanner : MonoBehaviour
 }
 ```
 
-### Key Parameters
-- `origin` – world position the ray starts from.
-- `direction` – normalized direction of the ray. Unity will normalize the vector internally, but passing a normalized value avoids unnecessary work.
-- `maxDistance` – how far the ray should travel. Use a reasonable distance; `Mathf.Infinity` works but costs more because Unity checks farther.
-- `layerMask` – determines which physics layers will be considered. Build masks with `LayerMask` fields in the inspector or bit shifting (`1 << layerIndex`).
-- `queryTriggerInteraction` – optional parameter controlling whether trigger colliders are hit (`UseGlobal`, `Ignore`, `Collide`).
+### Основные Параметры
+- `origin` – мировая позиция, из которой исходит луч.
+- `direction` – нормализованное направление луча. Unity нормализует вектор внутри, но передача уже нормализованного значения избавляет от лишней работы.
+- `maxDistance` – дальность полёта луча. Используйте разумное расстояние; `Mathf.Infinity` работает, но обходится дороже, так как Unity проверяет дальше.
+- `layerMask` – определяет, какие физические слои будут учитываться. Маски формируются через поля `LayerMask` в инспекторе или побитовым сдвигом (`1 << layerIndex`).
+- `queryTriggerInteraction` – необязательный параметр, контролирующий попадание по триггерным коллайдерам (`UseGlobal`, `Ignore`, `Collide`).
 
-## Working With Layer Masks
+## Работа с Масками Слоёв
 
-Filtering is critical so that raycasts only interact with relevant colliders.
+Фильтрация критически важна, чтобы рейкасты взаимодействовали только с нужными коллайдерами.
 
 ```csharp
-// Only hit environment and interactable layers.
+// Попадать только по слоям окружения и взаимодействуемых объектов.
 LayerMask mask = LayerMask.GetMask("Environment", "Interactable");
 
-// Exclude the Player layer by inverting a single bit.
+// Исключить слой игрока инверсией одного бита.
 int excludePlayerMask = ~(1 << LayerMask.NameToLayer("Player"));
 
 if (Physics.Raycast(origin, direction, out RaycastHit hit, maxDistance, mask & excludePlayerMask))
 {
-    // Handle hit
+    // Обработать попадание
 }
 ```
 
-Use the inspector to configure masks when possible—the serialized `LayerMask` property automatically handles bit math and is less error-prone than hard-coded integers.
+По возможности настраивайте маски через инспектор — сериализованное свойство `LayerMask` автоматически обрабатывает побитовую математику и менее подвержено ошибкам, чем жёстко заданные целые числа.
 
-## Reading RaycastHit Data
+## Чтение Данных RaycastHit
 
-When the ray hits a collider, `RaycastHit` gives you:
-- `hit.collider` – the collider component struck.
-- `hit.point` – world-space point of impact.
-- `hit.normal` – surface normal at the hit point (useful for placing decals or aligning objects).
-- `hit.distance` – distance from origin to the impact.
-- `hit.rigidbody` or `hit.transform` – convenient shortcuts to the impacted object.
+Когда луч попадает в коллайдер, `RaycastHit` предоставляет:
+- `hit.collider` – поражённый компонент коллайдера.
+- `hit.point` – точка удара в мировом пространстве.
+- `hit.normal` – нормаль поверхности в точке удара (полезна для размещения декалей или выравнивания объектов).
+- `hit.distance` – расстояние от начала луча до точки удара.
+- `hit.rigidbody` или `hit.transform` – удобные ссылки на поражённый объект.
 
-Example: placing an indicator where the ray collides with the world.
+Пример: размещение индикатора в точке столкновения луча с миром.
 
 ```csharp
 if (Physics.Raycast(ray, out RaycastHit hit))
@@ -75,61 +75,61 @@ if (Physics.Raycast(ray, out RaycastHit hit))
 }
 ```
 
-## Variants and Overloads
+## Варианты и Перегрузки
 
-Unity provides several raycast helpers:
+Unity предоставляет несколько вспомогательных методов рейкаста:
 
-- `Physics.Raycast(Ray ray, ...)` – cast using a `Ray` struct, handy with camera screen-point rays.
-- `Physics.RaycastAll` – returns every hit along the ray. Useful for penetrating shots or picking the nearest manually. Beware of additional allocations and sorting.
-- `Physics.RaycastNonAlloc` – fills a preallocated array with hits to avoid garbage collection. Manage the array size to the maximum expected hits.
-- `Physics.SphereCast`, `Physics.CapsuleCast`, `Physics.BoxCast` – volume-based sweeps that simulate shapes moving along a ray. Good for detecting hits for wider projectiles or character collision prediction.
+- `Physics.Raycast(Ray ray, ...)` – бросок с использованием структуры `Ray`, удобно для лучей из экранных точек камеры.
+- `Physics.RaycastAll` – возвращает все попадания вдоль луча. Полезно для пробивающих выстрелов или ручного выбора ближайшего. Помните о дополнительных аллокациях и сортировке.
+- `Physics.RaycastNonAlloc` – заполняет заранее выделенный массив попаданиями, избегая сборки мусора. Управляйте размером массива исходя из максимального ожидаемого количества попаданий.
+- `Physics.SphereCast`, `Physics.CapsuleCast`, `Physics.BoxCast` – объёмные проверки, имитирующие движение фигур вдоль луча. Подходят для обнаружения попаданий широких снарядов или предсказания столкновений персонажа.
 
 ```csharp
 RaycastHit[] hits = new RaycastHit[8];
 int count = Physics.RaycastNonAlloc(origin, direction, hits, maxDistance, obstacleLayers);
 for (int i = 0; i < count; i++)
 {
-    // Process hits[i]
+    // Обработать hits[i]
 }
 ```
 
-## 2D Physics Equivalent
+## Эквивалент для 2D Физики
 
-For projects using the 2D physics engine, use the Physics2D API:
+Для проектов, использующих движок 2D физики, применяйте API Physics2D:
 
 ```csharp
 RaycastHit2D hit = Physics2D.Raycast(origin2D, direction2D, maxDistance, obstacleLayers);
 if (hit.collider != null)
 {
-    Debug.Log($"Hit {hit.collider.name} at {hit.point}");
+    Debug.Log($"Попадание в {hit.collider.name} в точке {hit.point}");
 }
 ```
 
-2D physics queries live in `Physics2D`, return `RaycastHit2D`, and rely on `LayerMask`s just like their 3D counterparts.
+Запросы 2D физики находятся в `Physics2D`, возвращают `RaycastHit2D` и работают с `LayerMask` точно так же, как их 3D аналоги.
 
-## Debugging Raycasts
+## Отладка Рейкастов
 
-- `Debug.DrawRay` and `Debug.DrawLine` visualize rays in the Scene view.
-- `Physics.Debug.DrawRay` (Unity 2022.2+) draws with duration and depth-testing options.
-- Enable Gizmos in the Scene/Game view during play mode to see the debug lines.
-- In the Physics Debug window (`Window > Analysis > Physics Debugger`), enable “Contacts” and “Queries” to inspect interactions in real time.
+- `Debug.DrawRay` и `Debug.DrawLine` визуализируют лучи в виде Scene.
+- `Physics.Debug.DrawRay` (Unity 2022.2+) рисует с указанием длительности и параметрами проверки глубины.
+- Включите Gizmos в виде Scene/Game во время режима воспроизведения, чтобы видеть отладочные линии.
+- В окне Physics Debug (`Window > Analysis > Physics Debugger`) включите "Contacts" и "Queries" для проверки взаимодействий в реальном времени.
 
-## Best Practices
+## Лучшие Практики
 
-- **Use FixedUpdate for physics-driven logic.** If a ray triggers a physics reaction (forces, Rigidbody movement), keep it in `FixedUpdate`. Casting from input can happen in `Update`, but apply physics responses later.
-- **Normalize direction vectors** and reuse them when possible.
-- **Limit query distance** to the shortest meaningful range for better performance and fewer accidental hits.
-- **Cache frequently used layer masks** to avoid rebuilding them every frame.
-- **Avoid per-frame RaycastAll unless needed.** It allocates arrays and sorts internally; prefer `Raycast` or `RaycastNonAlloc` in hot paths.
-- **Mind triggers.** Set `queryTriggerInteraction` explicitly when you rely on triggers; default behaviour follows project settings.
-- **Test from multiple origins.** Player eyes, weapon muzzles, or camera positions can produce different results—prototype with gizmos to confirm alignment.
+- **Используйте FixedUpdate для физической логики.** Если луч вызывает физическую реакцию (силы, движение Rigidbody), оставьте это в `FixedUpdate`. Бросок по вводу может происходить в `Update`, но применяйте физические реакции позже.
+- **Нормализуйте векторы направления** и по возможности переиспользуйте их.
+- **Ограничивайте дальность запроса** минимально необходимым расстоянием для лучшей производительности и меньшего числа случайных попаданий.
+- **Кешируйте часто используемые маски слоёв**, чтобы не пересоздавать их каждый кадр.
+- **Избегайте RaycastAll на каждый кадр без необходимости.** Он выделяет массивы и сортирует внутри; в горячих путях предпочитайте `Raycast` или `RaycastNonAlloc`.
+- **Учитывайте триггеры.** Явно задавайте `queryTriggerInteraction`, когда полагаетесь на триггеры; поведение по умолчанию следует настройкам проекта.
+- **Тестируйте с разных точек начала.** Глаза игрока, дуло оружия или позиция камеры могут давать разные результаты — прототипируйте с гизмо для подтверждения выравнивания.
 
-## Common Use Cases
+## Распространённые Сценарии Использования
 
-- **Line of sight:** Cast from AI to targets to confirm visibility.
-- **Hit-scan weapons:** Raycast from the weapon muzzle to determine impact point and spawn decals or particle effects.
-- **Interaction prompts:** Cast from the camera center to highlight selectable objects within reach.
-- **Surface alignment:** Sample normals to orient decals, footsteps, or procedurally placed objects.
-- **Ground checks:** Cast downwards to confirm the player is grounded when jump logic needs certainty.
+- **Линия обзора:** бросайте луч из ИИ к целям для подтверждения видимости.
+- **Хитскан-оружие:** рейкаст от дула оружия для определения точки удара и создания декалей или эффектов частиц.
+- **Подсказки взаимодействия:** бросайте луч из центра камеры для подсветки выбираемых объектов в пределах досягаемости.
+- **Выравнивание по поверхности:** используйте нормали для ориентации декалей, следов ног или процедурно размещаемых объектов.
+- **Проверка земли:** бросайте луч вниз для подтверждения, что игрок стоит на земле, когда логика прыжка требует уверенности.
 
-Use raycasts as the starting point for more complex physics logic, and layer them with additional checks (dot products, tag comparisons, distance thresholds) to build robust gameplay systems.
+Используйте рейкасты как отправную точку для более сложной физической логики и дополняйте их проверками (скалярные произведения, сравнения тегов, пороги расстояний) для построения надёжных игровых систем.

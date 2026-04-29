@@ -1,26 +1,26 @@
-# Unity Mouse Input - Legacy Input Manager
+# Unity Ввод мыши — Устаревший менеджер ввода
 
-> **Note:** This page covers the **Legacy Input Manager**. For Unity 6+ projects, see the [New Input System](new-input-system.md) which is now the standard.
+> **Примечание:** Эта страница описывает **Устаревший менеджер ввода (Legacy Input Manager)**. Для проектов на Unity 6+ рекомендуется использовать [Новую систему ввода](new-input-system.md), которая теперь является стандартной.
 
 ```csharp
 if (Input.GetAxis("Mouse X") < 0) {
-    Debug.Log("Mouse moved left");
+    Debug.Log("Мышь движется влево");
 }
 
 if (Input.GetAxis("Mouse Y") > 0) {
-    Debug.Log("Mouse moved up");
+    Debug.Log("Мышь движется вверх");
 }
 
 if (Input.GetMouseButtonDown(0)) {
-    Debug.Log("Pressed primary button.");
+    Debug.Log("Нажата основная кнопка.");
 }
 
 if (Input.GetMouseButtonDown(1)) {
-    Debug.Log("Pressed secondary button.");
+    Debug.Log("Нажата дополнительная кнопка.");
 }
 
 if (Input.GetMouseButtonDown(2)) {
-    Debug.Log("Pressed middle click.");
+    Debug.Log("Нажата средняя кнопка мыши.");
 }
 ```
 

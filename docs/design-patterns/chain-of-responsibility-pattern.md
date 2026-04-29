@@ -1,16 +1,16 @@
-# Unity Chain of Responsibility Pattern - Request Handling
+# Unity — Паттерн «Цепочка обязанностей» (Chain of Responsibility)
 
-The Chain of Responsibility pattern creates a chain of handler objects for a request. Each handler contains a reference to the next handler in the chain and decides either to handle the request or pass it to the next handler.
+Паттерн «Цепочка обязанностей» создаёт цепочку объектов-обработчиков для запроса. Каждый обработчик содержит ссылку на следующий в цепочке и решает — обработать запрос самостоятельно или передать его дальше.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// Handler interface
+// Интерфейс обработчика
 public interface IHandler {
     void SetNext(IHandler handler);
     void HandleRequest(string request);
 }
 
-// Base handler class
+// Базовый класс обработчика
 public abstract class BaseHandler : IHandler {
     protected IHandler nextHandler;
 
@@ -25,11 +25,11 @@ public abstract class BaseHandler : IHandler {
     }
 }
 
-// Concrete handlers
+// Конкретные обработчики
 public class UIHandler : BaseHandler {
     public override void HandleRequest(string request) {
         if (request == "UI_CLICK") {
-            Debug.Log("UI Handler: Handling UI click");
+            Debug.Log("UI Handler: Обработка клика по UI");
         } else {
             base.HandleRequest(request);
         }
@@ -39,19 +39,19 @@ public class UIHandler : BaseHandler {
 public class GameplayHandler : BaseHandler {
     public override void HandleRequest(string request) {
         if (request == "PLAYER_MOVE") {
-            Debug.Log("Gameplay Handler: Handling player movement");
+            Debug.Log("Gameplay Handler: Обработка движения игрока");
         } else {
             base.HandleRequest(request);
         }
     }
 }
 
-// Usage
+// Использование
 public class InputManager : MonoBehaviour {
     private IHandler handlerChain;
 
     private void Start() {
-        // Set up the chain
+        // Настройка цепочки
         var uiHandler = new UIHandler();
         var gameplayHandler = new GameplayHandler();
         
@@ -60,7 +60,7 @@ public class InputManager : MonoBehaviour {
     }
 
     private void Update() {
-        // Example: Process different types of input
+        // Пример: обработка различных типов ввода
         if (Input.GetMouseButtonDown(0)) {
             handlerChain.HandleRequest("UI_CLICK");
         }
@@ -71,11 +71,11 @@ public class InputManager : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Input Handling System
-A complete example showing how to implement a robust input handling system using the Chain of Responsibility Pattern. This implementation demonstrates how to:
-- Handle different types of input (UI, gameplay, cutscenes)
-- Process input based on game state
-- Chain multiple handlers together
+#### Подробный пример — система обработки ввода
+Полный пример реализации надёжной системы обработки ввода с использованием паттерна «Цепочка обязанностей». Эта реализация демонстрирует, как:
+- Обрабатывать различные типы ввода (UI, геймплей, катсцены)
+- Обрабатывать ввод в зависимости от состояния игры
+- Соединять несколько обработчиков в цепочку
 
-👉 [View Full Implementation](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/ChainOfResponsibility/README.md)
+👉 [Посмотреть полную реализацию](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/ChainOfResponsibility/README.md)
 

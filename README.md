@@ -1,20 +1,20 @@
-# Unity Cheat Sheet
+# Unity Шпаргалка
 
-## Table of Contents
+## Содержание
 
-- [Basics](#basics)
+- [Основы](#основы)
   - [MonoBehaviour](#monobehaviour)
   - [Transform](#transform)
   - [Vector3](#vector3)
   - [Quaternion](#quaternion)
-  - [Euler Angles](#euler-angles)
-- [Movement & Rotation](#movement--rotation)
-  - [Move Object](#move-object)
+  - [Углы Эйлера](#углы-эйлера)
+- [Движение и вращение](#движение-и-вращение)
+  - [Перемещение объекта](#перемещение-объекта)
     - [Transform.Translate()](#transformtranslate)
     - [Vector3.MoveTowards()](#vector3movetowards)
     - [Vector3.Lerp()](#vector3lerp)
     - [Vector3.SmoothDamp()](#vector3smoothdamp)
-  - [Rotate Object](#rotate-object)
+  - [Вращение объекта](#вращение-объекта)
     - [Transform.rotation](#transformrotation)
     - [Transform.eulerAngles](#transformeulerangles)
     - [Transform.Rotate()](#transformrotate)
@@ -23,72 +23,70 @@
     - [Quaternion.LookRotation()](#quaternionlookrotation)
     - [Quaternion.FromToRotation()](#quaternionfromtorotation)
     - [Quaternion.ToAngleAxis()](#quaterniontoangleaxis)
-- [Physics](#physics)
+- [Физика](#физика)
   - [Raycast](#raycast)
-  - [Collisions & Triggers](#collisions--triggers)
-  - [Ignore Collision](#ignorecollision)
-- [Input](#input)
-  - [Keyboard](#keyboard)
-  - [Mouse](#mouse)
-  - [Touch](#touch)
-  - [New Input System](#new-input-system)
+  - [Коллизии и триггеры](#коллизии-и-триггеры)
+  - [Игнорирование коллизий](#игнорирование-коллизий)
+- [Ввод](#ввод)
+  - [Клавиатура](#клавиатура)
+  - [Мышь](#мышь)
+  - [Тач](#тач)
+  - [Новая система ввода](#новая-система-ввода)
 - [UI](#ui)
-  - [Button](#button)
-  - [Slider](#slider)
-- [Audio](#audio)
-  - [Basic Audio Play](#basic-audio-play)
-- [Scripting](#scripting)
-  - [Coroutines](#coroutines)
+  - [Кнопка](#кнопка)
+  - [Ползунок](#ползунок)
+- [Аудио](#аудио)
+  - [Базовое воспроизведение аудио](#базовое-воспроизведение-аудио)
+- [Скриптинг](#скриптинг)
+  - [Корутины](#корутины)
   - [Async/Await](#asyncawait)
-    - [Basic Structure](#basic-structure)
-    - [Loading Resources](#loading-resources)
-    - [Web Requests](#web-requests)
-    - [Scene Loading](#scene-loading)
-    - [Parallel Operations](#parallel-operations)
-    - [Timeout Handling](#timeout-handling)
-    - [Best Practices](#best-practices)
-  - [Event Systems](#event-systems)
-  - [Scriptable Objects](#scriptable-objects)
-  - [Custom Editor Scripts](#custom-editor-scripts)
-- [Design Patterns](#design-patterns)
+    - [Базовая структура](#базовая-структура)
+    - [Загрузка ресурсов](#загрузка-ресурсов)
+    - [Веб-запросы](#веб-запросы)
+    - [Загрузка сцен](#загрузка-сцен)
+    - [Параллельные операции](#параллельные-операции)
+    - [Обработка таймаута](#обработка-таймаута)
+    - [Лучшие практики](#лучшие-практики)
+  - [Системы событий](#системы-событий)
+  - [Скриптовые объекты](#скриптовые-объекты)
+  - [Пользовательские скрипты редактора](#пользовательские-скрипты-редактора)
+- [Паттерны проектирования](#паттерны-проектирования)
   - [Singleton](#singleton)
-  - [Factory Pattern](#factory-pattern)
-  - [Observer Pattern](#observer-pattern)
-  - [Command Pattern](#command-pattern)
-  - [State Pattern](#state-pattern)
-    - [Basic Example](#basic-example)
-    - [Detailed Example - Game Onboarding System](#detailed-example---game-onboarding-system)
-  - [Strategy Pattern](#strategy-pattern)
-    - [Basic Example](#basic-example-1)
-    - [Detailed Example - Combat System](#detailed-example---combat-system)
-  - [Object Pooling Pattern](#object-pooling-pattern)
-  - [Chain of Responsibility Pattern](#chain-of-responsibility-pattern)
-    - [Basic Example](#basic-example-2)
-    - [Detailed Example - Input Handling System](#detailed-example---input-handling-system)
-- [Shortcuts](#shortcuts)
-  - [Scene View Editing](#scene-view-editing)
-  - [Scene View Navigation](#scene-view-navigation)
-  - [Hierarchy Management](#hierarchy-management)
-  - [Layout](#layout)
-- [Practical Use Cases](#practical-use-cases)
-  - [Check if object is on the ground](#check-if-object-is-on-the-ground)
-  - [Get the transform of a Body Bone](#get-the-transform-of-a-body-bone)
-  - [Make object look at the camera](#make-object-look-at-the-camera)
-  - [Camera follow & orbit](#camera-follow--orbit)
-  - [Fade UI element](#fade-ui-element)
-  - [Load next scene](#load-next-scene)
-- [TBD (To Be Documented)](#tbd-to-be-documented)
-  - [Scripting](#scripting-1)
+  - [Фабричный метод (Factory Pattern)](#фабричный-метод-factory-pattern)
+  - [Наблюдатель (Observer Pattern)](#наблюдатель-observer-pattern)
+  - [Команда (Command Pattern)](#команда-command-pattern)
+  - [Паттерн «Состояние» (State Pattern)](#паттерн-состояние-state-pattern)
+    - [Базовый пример](#базовый-пример)
+    - [Подробный пример — система онбординга](#подробный-пример--система-онбординга)
+  - [Паттерн «Стратегия» (Strategy Pattern)](#паттерн-стратегия-strategy-pattern)
+    - [Базовый пример](#базовый-пример-1)
+    - [Подробный пример — боевая система](#подробный-пример--боевая-система)
+  - [Пул объектов (Object Pooling Pattern)](#пул-объектов-object-pooling-pattern)
+  - [Цепочка обязанностей (Chain of Responsibility Pattern)](#цепочка-обязанностей-chain-of-responsibility-pattern)
+    - [Базовый пример](#базовый-пример-2)
+    - [Подробный пример — система обработки ввода](#подробный-пример--система-обработки-ввода)
+- [Горячие клавиши](#горячие-клавиши)
+  - [Редактирование в окне сцены](#редактирование-в-окне-сцены)
+  - [Навигация в окне сцены](#навигация-в-окне-сцены)
+  - [Управление иерархией](#управление-иерархией)
+  - [Разметка](#разметка)
+- [Практические примеры](#практические-примеры)
+  - [Проверка приземления объекта](#проверка-приземления-объекта)
+  - [Получение трансформа кости тела](#получение-трансформа-кости-тела)
+  - [Поворот объекта лицом к камере](#поворот-объекта-лицом-к-камере)
+  - [Следование и облёт камеры](#следование-и-облёт-камеры)
+  - [Затухание UI-элемента](#затухание-ui-элемента)
+  - [Загрузка следующей сцены](#загрузка-следующей-сцены)
 
-## Basics
+## Основы
 
 ### [MonoBehaviour](https://docs.unity3d.com/ScriptReference/MonoBehaviour.html)
-[MonoBehaviour Life Cycle Flow Chart](https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg)
+[Схема жизненного цикла MonoBehaviour](https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg)
 ```csharp
-// MonoBehaviour is the base class from which every Unity script derives.
-// Offers some life cycle functions that are easier for you to develop your game.
+// MonoBehaviour — базовый класс, от которого наследуется каждый скрипт Unity.
+// Предоставляет функции жизненного цикла, упрощающие разработку игры.
 
-// Some of the most frequently used ones are as follows;
+// Наиболее часто используемые из них:
 Awake()
 Start()
 Update()
@@ -101,72 +99,72 @@ OnDisable()
 
 ### [Transform](https://docs.unity3d.com/ScriptReference/Transform.html)
 ```csharp
-// Transform is a fundamental component in Unity that every GameObject has.
-// It defines the object's Position, Rotation, and Scale in the game world.
+// Transform — фундаментальный компонент Unity, присутствующий у каждого GameObject.
+// Определяет позицию, вращение и масштаб объекта в игровом мире.
 
-// Access the transform component
+// Получение компонента Transform
 Transform transform = gameObject.transform;
 
-// Position: Vector3 representing world space coordinates (x, y, z)
-transform.position = new Vector3(0, 2, 0);      // Set absolute position
-transform.localPosition = Vector3.zero;         // Position relative to parent
+// Position: Vector3, представляющий координаты в мировом пространстве (x, y, z)
+transform.position = new Vector3(0, 2, 0);      // Установить абсолютную позицию
+transform.localPosition = Vector3.zero;         // Позиция относительно родителя
 
-// Rotation: Can be set using Euler angles (degrees) or Quaternions
-transform.rotation = Quaternion.identity;       // No rotation
-transform.eulerAngles = new Vector3(0, 90, 0);  // Rotate 90 degrees around Y axis
-transform.localRotation = Quaternion.identity;  // Rotation relative to parent
+// Rotation: задаётся через углы Эйлера (градусы) или кватернионы
+transform.rotation = Quaternion.identity;       // Без вращения
+transform.eulerAngles = new Vector3(0, 90, 0);  // Поворот на 90 градусов вокруг оси Y
+transform.localRotation = Quaternion.identity;  // Вращение относительно родителя
 
-// Scale: Vector3 representing scale on each axis
-transform.localScale = Vector3.one;             // Normal scale (1, 1, 1)
-transform.localScale = new Vector3(2, 2, 2);    // Double size on all axes
+// Scale: Vector3, представляющий масштаб по каждой оси
+transform.localScale = Vector3.one;             // Обычный масштаб (1, 1, 1)
+transform.localScale = new Vector3(2, 2, 2);    // Двойной размер по всем осям
 
-// Parent-Child Relationships
-transform.parent = anotherObject.transform;     // Set parent
-transform.SetParent(null);                      // Remove parent (make root)
+// Отношения родитель-потомок
+transform.parent = anotherObject.transform;     // Установить родителя
+transform.SetParent(null);                      // Убрать родителя (сделать корневым)
 ```
 
 ### [Vector3](https://docs.unity3d.com/ScriptReference/Vector3.html)
 ```csharp
-// Vector3 is representation of 3D vectors and points
-// It's used to represent 3D positions,considering x,y & z axis.
+// Vector3 — представление трёхмерных векторов и точек
+// Используется для представления 3D-позиций по осям x, y и z.
 
 Vector3 v = new Vector3(0f, 0f, 0f);
 ```
 
 ### [Quaternion](https://docs.unity3d.com/ScriptReference/Quaternion.html)
 ```csharp
-// A Quaternion stores the rotation of the Transform in world space.
-// Quaternions are based on complex numbers and don't suffer from gimbal lock.
-// Unity internally uses Quaternions to represent all rotations.
-// You almost never access or modify individual Quaternion components (x,y,z,w); 
+// Quaternion хранит вращение Transform в мировом пространстве.
+// Кватернионы основаны на комплексных числах и не подвержены шарнирному замку.
+// Unity внутренне использует кватернионы для представления всех вращений.
+// Обращаться к отдельным компонентам кватерниона (x,y,z,w) почти никогда не нужно; 
 
-// A rotation 30 degrees around the y-axis
+// Поворот на 30 градусов вокруг оси Y
 Quaternion rotation = Quaternion.Euler(0, 30, 0);
 ```
 
-### Euler Angles
+### Углы Эйлера
 ```csharp
-// Euler angles are "degree angles" like 90, 180, 45, 30 degrees.
-// Quaternions differ from Euler angles in that they represent a point on a Unit Sphere (the radius is 1 unit).
+// Углы Эйлера — это градусные углы, например 90, 180, 45, 30 градусов.
+// Кватернионы отличаются от углов Эйлера тем, что представляют точку на единичной сфере (радиус = 1).
 
-// Create a quaternion that represents 30 degrees about X, 10 degrees about Y
+// Создать кватернион: 30 градусов по X, 10 градусов по Y
 Quaternion rotation = Quaternion.Euler(30, 10, 0);
 
-// Using a Vector
+// Использование вектора
 Vector3 EulerRotation = new Vector3(30, 10, 0);
 Quaternion rotation = Quaternion.Euler(EulerRotation);
 
-// Convert a transform's Quaternion angles to Euler angles
+// Преобразование кватерниона Transform в углы Эйлера
 Quaternion quaternionAngles = transform.rotation;
 Vector3 eulerAngles = quaternionAngles.eulerAngles;
 ```
 
-## Movement & Rotation
+## Движение и вращение
 
-### Move Object
+### Перемещение объекта
 #### Transform.Translate()
 ```csharp
-// Moves the transform in the direction and distance of translation.
+// Перемещает Transform в заданном направлении на заданное расстояние.
 public void Translate(Vector3 translation);
 public void Translate(Vector3 translation, Space relativeTo = Space.Self);
 
@@ -175,8 +173,8 @@ transform.Translate(Vector3.right * movementSpeed);
 
 #### Vector3.MoveTowards()
 ```csharp
-// Calculate a position between the points specified by current and target
-// Moving no farther than the distance specified by maxDistanceDelta
+// Вычислить позицию между текущей и целевой точками
+// не превышая расстояние, заданное параметром maxDistanceDelta
 public static Vector3 MoveTowards(Vector3 current, Vector3 target, float maxDistanceDelta);
 
 Vector3 targetPosition;
@@ -185,7 +183,7 @@ transform.position = Vector3.MoveTowards(transform.position, targetPosition, Tim
 
 #### Vector3.Lerp()
 ```csharp
-// Linearly interpolates between two points. Results in a smooth transition.
+// Линейная интерполяция между двумя точками. Обеспечивает плавный переход.
 public static Vector3 Lerp(Vector3 startValue, Vector3 endValue, float interpolationRatio);
 
 Vector3 targetPosition;
@@ -196,24 +194,24 @@ transform.position = Vector3.Lerp(transform.position, targetPosition, t);
 
 #### Vector3.SmoothDamp()
 ```csharp
-// Gradually changes a vector towards a desired goal over time.
-// The vector is smoothed by some spring-damper like function, which will never overshoot.
-// The most common use is for smoothing a follow camera.
+// Постепенно изменяет вектор в направлении желаемой цели со временем.
+// Вектор сглаживается функцией пружинного демпфера без перерегулирования.
+// Чаще всего используется для плавного следования камеры.
 public static Vector3 SmoothDamp(Vector3 current, Vector3 target, ref Vector3 currentVelocity, float smoothTime, float maxSpeed = Mathf.Infinity, float deltaTime = Time.deltaTime);
 
 float smoothTime = 1f;
 Vector3 velocity;
 Vector3 targetPosition = target.TransformPoint(new Vector3(0, 5, -10));
-// Smoothly move the camera towards that target position
+// Плавно перемещать камеру к целевой позиции
 transform.position = Vector3.SmoothDamp(transform.position, targetPosition, ref velocity, smoothTime);
 ```
 
-### Rotate Object
+### Вращение объекта
 #### Transform.rotation
 ```csharp
-// A Quaternion stores the rotation of the Transform in world space.
-// Quaternions are based on complex numbers and don't suffer from gimbal lock.
-// Unity internally uses Quaternions to represent all rotations.
+// Quaternion хранит вращение Transform в мировом пространстве.
+// Кватернионы основаны на комплексных числах и не подвержены шарнирному замку.
+// Unity внутренне использует кватернионы для представления всех вращений.
 
 transform.rotation = new Quaternion(rotx, roty, rotz, rotw);
 ```
@@ -241,31 +239,31 @@ transform.Rotate(rotx, roty, rotz);
 // Rotates the transform about axis passing through point in world coordinates by angle degrees.
 public void RotateAround(Vector3 point, Vector3 axis, float angle);
 
-// Spin the object around the target at 20 degrees/second.
+// Вращать объект вокруг цели со скоростью 20 градусов/секунду.
 Transform target;
 transform.RotateAround(target.position, Vector3.up, 20 * Time.deltaTime);
 ```
 
 #### Transform.LookAt()
 ```csharp
-// Points the positive 'Z' (forward) side of an object at a position in world space.
+// Направляет положительную ось 'Z' (вперёд) объекта на позицию в мировом пространстве.
 public void LookAt(Transform target);
 public void LookAt(Transform target, Vector3 worldUp = Vector3.up);
 
-// Rotate the object's forward vector to point at the target Transform.
+// Повернуть вектор «вперёд» объекта в направлении целевого Transform.
 Transform target;
 transform.LookAt(target);
 
-// Same as above, but setting the worldUp parameter to Vector3.left in this example turns the object on its side.
+// То же самое, но worldUp = Vector3.left поворачивает объект набок.
 transform.LookAt(target, Vector3.left);
 ```
 
 #### Quaternion.LookRotation()
 ```csharp
-// Creates a rotation with the specified forward and upwards directions.
+// Создаёт вращение с заданным направлением «вперёд» и «вверх».
 public static Quaternion LookRotation(Vector3 forward, Vector3 upwards = Vector3.up);
 
-// The following code rotates the object towards a target object.
+// Следующий код поворачивает объект в направлении целевого объекта.
 Vector3 direction = target.position - transform.position;
 Quaternion rotation = Quaternion.LookRotation(direction);
 transform.rotation = rotation;
@@ -273,39 +271,39 @@ transform.rotation = rotation;
 
 #### Quaternion.FromToRotation()
 ```csharp
-// Creates a rotation (a Quaternion) which rotates from fromDirection to toDirection.
+// Создаёт вращение (кватернион) от fromDirection до toDirection.
 public static Quaternion FromToRotation(Vector3 fromDirection, Vector3 toDirection);
 
-// Sets the rotation so that the transform's y-axis goes along the z-axis.
+// Устанавливает вращение так, чтобы ось Y Transform совпадала с осью Z.
 transform.rotation = Quaternion.FromToRotation(Vector3.up, transform.forward);
 ```
 
 #### Quaternion.ToAngleAxis()
 ```csharp
-// Converts a rotation to angle-axis representation (angles in degrees).
-// In other words, extracts the angle as well as the axis that this quaternion represents.
+// Преобразует вращение в представление «угол-ось» (углы в градусах).
+// То есть извлекает угол и ось, которые представляет данный кватернион.
 public void ToAngleAxis(out float angle, out Vector3 axis);
 
-// Extracts the angle - axis rotation from the transform rotation
+// Извлекает вращение «угол-ось» из вращения Transform
 float angle = 0.0f;
 Vector3 axis = Vector3.zero;
 transform.rotation.ToAngleAxis(out angle, out axis);
 ```
 
-## Physics
+## Физика
 ### Raycast
 
 ```csharp
 void FixedUpdate() {
-    // Bit shift the index of the layer (8) to get a bit mask
+    // Битовый сдвиг индекса слоя (8) для получения битовой маски
     int layerMask = 1 << 8;
 
-    // This would cast rays only against colliders in layer 8.
-    // But instead we want to collide against everything except layer 8. The ~ operator does this, it inverts a bitmask.
+    // Лучи будут касаться только коллайдеров на слое 8.
+    // Но нам нужно обнаруживать всё, кроме слоя 8. Оператор ~ инвертирует битовую маску.
     layerMask = ~layerMask;
 
     RaycastHit hit;
-    // Does the ray intersect any objects excluding the player layer
+    // Проверяем пересечение луча с объектами, исключая слой игрока
     if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, Mathf.Infinity, layerMask)) {
         Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.yellow);
         Debug.Log("Did Hit");
@@ -313,91 +311,91 @@ void FixedUpdate() {
 }
 ```
 
-### Collisions & Triggers
+### Коллизии и триггеры
 
-> For the complete guide with collision matrix, 2D events, and common patterns, see [Collisions & Triggers](docs/physics/collisions.md)
+> Полное руководство с матрицей коллизий, 2D-событиями и паттернами см. в [Коллизии и триггеры](docs/physics/collisions.md)
 
-#### Collision Events (Physics Response)
+#### События коллизий (с физическим откликом)
 
 ```csharp
-// Called when collision begins
+// Вызывается при начале столкновения
 void OnCollisionEnter(Collision collision)
 {
     Debug.Log("Hit: " + collision.gameObject.name);
     
-    // Access collision details
+    // Доступ к деталям столкновения
     Vector3 impactVelocity = collision.relativeVelocity;
     ContactPoint contact = collision.GetContact(0);
     Vector3 hitPoint = contact.point;
 }
 
-// Called every frame during collision
+// Вызывается каждый кадр во время столкновения
 void OnCollisionStay(Collision collision) { }
 
-// Called when collision ends
+// Вызывается при завершении столкновения
 void OnCollisionExit(Collision collision) { }
 ```
 
-#### Trigger Events (No Physics Response)
+#### События триггеров (без физического отклика)
 
 ```csharp
-// Called when entering trigger (requires "Is Trigger" checked on collider)
+// Вызывается при входе в триггер (требуется флаг "Is Trigger" на коллайдере)
 void OnTriggerEnter(Collider other)
 {
     if (other.CompareTag("Player"))
     {
-        // Pickup item, enter zone, etc.
+        // Подобрать предмет, войти в зону и т.д.
         Destroy(gameObject);
     }
 }
 
-// Called every frame while inside trigger
+// Вызывается каждый кадр, пока объект находится внутри триггера
 void OnTriggerStay(Collider other) { }
 
-// Called when exiting trigger
+// Вызывается при выходе из триггера
 void OnTriggerExit(Collider other) { }
 ```
 
-#### 2D Equivalents
+#### 2D-эквиваленты
 ```csharp
 void OnCollisionEnter2D(Collision2D collision) { }
 void OnTriggerEnter2D(Collider2D other) { }
 // Also: OnCollisionStay2D, OnCollisionExit2D, OnTriggerStay2D, OnTriggerExit2D
 ```
 
-#### Requirements
-- Both objects need a **Collider** (or Collider2D)
-- At least one object needs a **Rigidbody** (or Rigidbody2D)
-- For triggers: Check **"Is Trigger"** on at least one collider
+#### Требования
+- Оба объекта должны иметь **Collider** (или Collider2D)
+- Хотя бы один объект должен иметь **Rigidbody** (или Rigidbody2D)
+- Для триггеров: включите **"Is Trigger"** хотя бы на одном коллайдере
 
-### Ignore Collision
+### Игнорирование коллизий
 ```csharp
-// Makes the collision detection system ignore all collisions between collider1 and collider2.
+// Заставляет систему коллизий игнорировать все столкновения между collider1 и collider2.
 public static void IgnoreCollision(Collider collider1, Collider collider2, bool ignore = true);
 
-// Here we're disabling the collision detection between the colliders of ally and bullet objects.
+// Отключаем обнаружение коллизий между коллайдерами объектов ally и bullet.
 Transform bullet;
 Transform ally;
 Physics.IgnoreCollision(bullet.GetComponent<Collider>(), ally.GetComponent<Collider>());
 ```
 
-## Input
+## Ввод
 
-### Keyboard
+### Клавиатура
 
 ```csharp
-// Returns true during the frame the user starts pressing down the key
+// Возвращает true в кадре, когда пользователь нажимает клавишу
 if (Input.GetKeyDown(KeyCode.Space)) {
     Debug.Log("Space key was pressed");
 }
 
-// Jump is also set to space in Input Manager
+// Jump также привязан к пробелу в Input Manager
 if (Input.GetButtonDown("Jump")) {
     Debug.Log("Do something");
 }
 ```
 
-### Mouse
+### Мышь
 
 ```csharp
 if (Input.GetAxis("Mouse X") < 0) {
@@ -421,7 +419,7 @@ if (Input.GetMouseButtonDown(2)) {
 }
 ```
 
-### Touch
+### Тач
 ```csharp
 if (Input.touchCount > 0) {
     touch = Input.GetTouch(0);
@@ -440,19 +438,19 @@ if (Input.touchCount > 0) {
 }
 ```
 
-### New Input System
+### Новая система ввода
 
-The Input System package is the **standard for Unity 6** and recommended for all new projects. It provides flexible, multi-device input handling with runtime rebinding support.
+Пакет Input System является **стандартом для Unity 6** и рекомендуется для всех новых проектов. Обеспечивает гибкую обработку ввода с нескольких устройств и поддержку переназначения клавиш во время выполнения.
 
-> For the complete guide with all examples, see [New Input System](docs/input/new-input-system.md)
+> Полное руководство со всеми примерами см. в [Новая система ввода](docs/input/new-input-system.md)
 
-#### Quick Setup
+#### Быстрая настройка
 ```
 Window > Package Manager > Unity Registry > Input System > Install
 Edit > Project Settings > Player > Active Input Handling > Input System Package (New)
 ```
 
-#### Direct Device Access
+#### Прямой доступ к устройствам
 ```csharp
 using UnityEngine.InputSystem;
 
@@ -476,7 +474,7 @@ if (Gamepad.current != null) {
 }
 ```
 
-#### Using Input Actions (Recommended)
+#### Использование Input Actions (рекомендуется)
 ```csharp
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -518,8 +516,8 @@ public class PlayerController : MonoBehaviour
 ### Button
 
 ```csharp
-// Button is used to handle user clicks and interactions.
-// Attach this script to a Button component to respond to button clicks.
+// Button используется для обработки кликов и взаимодействий пользователя.
+// Прикрепите этот скрипт к компоненту Button для обработки нажатий.
 
 using UnityEngine.UI;
 
@@ -533,8 +531,8 @@ void MyButtonClickHandler() {
 
 ### Slider
 ```csharp
-// Slider is used for selecting a value within a range.
-// Attach this script to a Slider component to respond to value changes.
+// Slider используется для выбора значения в заданном диапазоне.
+// Прикрепите этот скрипт к компоненту Slider для обработки изменений значения.
 
 using UnityEngine.UI;
 
@@ -546,41 +544,41 @@ void MySliderValueChangedHandler(float value) {
 }
 ```
 
-## Audio
+## Аудио
 
-### Basic Audio Play
+### Базовое воспроизведение аудио
 
 ```csharp
 public class PlayAudio : MonoBehaviour {
     public AudioSource audioSource;
 
     void Start() {
-        // Calling Play on an Audio Source that is already playing will make it start from the beginning
+        // Вызов Play на уже воспроизводящемся источнике звука перезапускает его с начала
         audioSource.Play();
     }
 }
 ```
 
-## Scripting
+## Скриптинг
 
-### Coroutines
-Coroutines in Unity are a powerful feature that allows you to pause the execution of a function and resume it later. This is particularly useful for tasks that need to be spread over several frames, such as animations, waiting for a condition to be met, or handling asynchronous operations.
+### Корутины
+Корутины в Unity — мощная возможность, позволяющая приостановить выполнение функции и возобновить его позже. Особенно полезны для задач, которые нужно растянуть на несколько кадров: анимации, ожидание условия или асинхронные операции.
 
-#### Basic Coroutine Example
+#### Базовый пример корутины
 ```csharp
 using UnityEngine;
 using System.Collections;
 
 public class CoroutineExample : MonoBehaviour {
     void Start() {
-        // Start the coroutine
+        // Запустить корутину
         StartCoroutine(ExampleCoroutine());
     }
 
     IEnumerator ExampleCoroutine() {
         Debug.Log("Coroutine started");
 
-        // Wait for 2 seconds
+        // Ожидать 2 секунды
         yield return new WaitForSeconds(2);
 
         Debug.Log("Coroutine resumed after 2 seconds");
@@ -588,47 +586,47 @@ public class CoroutineExample : MonoBehaviour {
 }
 ```
 
-#### Using Coroutines for Repeated Actions
-Coroutines can be used to perform repeated actions with a delay between each iteration.
+#### Использование корутин для повторяющихся действий
+Корутины можно использовать для выполнения повторяющихся действий с задержкой между итерациями.
 
 ```csharp
 IEnumerator RepeatActionCoroutine() {
     while (true) {
         Debug.Log("Action performed");
         
-        // Wait for 1 second before repeating
+        // Ожидать 1 секунду перед следующим повторением
         yield return new WaitForSeconds(1);
     }
 }
 
-// Start the coroutine
+// Запустить корутину
 StartCoroutine(RepeatActionCoroutine());
 ```
 
-#### Waiting for a Condition
-Coroutines can also wait for a condition to be true before continuing execution.
+#### Ожидание условия
+Корутины также могут ожидать выполнения условия перед продолжением.
 
 ```csharp
 IEnumerator WaitForConditionCoroutine() {
     Debug.Log("Waiting for condition...");
 
-    // Wait until the condition is met
+    // Ожидать выполнения условия
     yield return new WaitUntil(() => SomeConditionIsTrue());
 
     Debug.Log("Condition met, resuming coroutine");
 }
 
 bool SomeConditionIsTrue() {
-    // Replace with your actual condition
+    // Замените реальным условием
     return Time.time > 5;
 }
 
-// Start the coroutine
+// Запустить корутину
 StartCoroutine(WaitForConditionCoroutine());
 ```
 
-#### Using Coroutines with Unity Events
-Coroutines can be used to handle events over time, such as fading out a UI element.
+#### Использование корутин с Unity Events
+Корутины можно использовать для обработки событий во времени, например, плавного исчезновения UI-элемента.
 
 ```csharp
 IEnumerator FadeOutCoroutine(CanvasGroup canvasGroup, float duration) {
@@ -640,19 +638,19 @@ IEnumerator FadeOutCoroutine(CanvasGroup canvasGroup, float duration) {
         canvasGroup.alpha = Mathf.Lerp(startAlpha, 0, progress);
         progress += rate * Time.deltaTime;
 
-        yield return null; // Wait for the next frame
+        yield return null; // Ожидать следующего кадра
     }
 
     canvasGroup.alpha = 0;
 }
 
-// Usage
+// Использование
 CanvasGroup myCanvasGroup = GetComponent<CanvasGroup>();
 StartCoroutine(FadeOutCoroutine(myCanvasGroup, 2.0f));
 ```
 
-#### Stopping Coroutines
-You can stop a coroutine using `StopCoroutine()` or `StopAllCoroutines()`.
+#### Остановка корутин
+Остановить корутину можно с помощью `StopCoroutine()` или `StopAllCoroutines()`.
 
 ```csharp
 Coroutine myCoroutine;
@@ -672,18 +670,18 @@ void StopAllMyCoroutines() {
 }
 ```
 
-#### Important Notes
-- Coroutines are not threads. They run on the main thread and are subject to the same performance constraints.
-- Use `yield return null;` to wait for the next frame.
-- Use `yield return new WaitForSeconds(seconds);` to wait for a specific amount of time.
-- Use `yield return new WaitUntil(() => condition);` to wait until a condition is true.
-- Coroutines can be nested, and you can yield return other coroutines.
+#### Важные замечания
+- Корутины — не потоки. Они выполняются в основном потоке с теми же ограничениями производительности.
+- Используйте `yield return null;` для ожидания следующего кадра.
+- Используйте `yield return new WaitForSeconds(seconds);` для ожидания заданного времени.
+- Используйте `yield return new WaitUntil(() => condition);` для ожидания условия.
+- Корутины можно вкладывать друг в друга и делать yield return из другой корутины.
 
-### Event Systems
-Unity provides several ways to handle events in your games. Here are the main approaches:
+### Системы событий
+Unity предоставляет несколько способов обработки событий в играх. Вот основные подходы:
 
 #### UnityEvents
-UnityEvents are serializable events that can be configured in the Inspector and used in scripts.
+UnityEvents — сериализуемые события, настраиваемые в Inspector и используемые в скриптах.
 
 ```csharp
 using UnityEngine;
@@ -691,11 +689,11 @@ using UnityEngine.Events;
 
 // Basic UnityEvent
 public class BasicEventExample : MonoBehaviour {
-    // This will show up in the inspector
+    // Отображается в Inspector
     public UnityEvent onGameStart;
     
     void Start() {
-        // Invoke the event
+        // Вызвать событие
         onGameStart?.Invoke();
     }
 }
@@ -715,24 +713,24 @@ public class ParameterizedEventExample : MonoBehaviour {
 }
 ```
 
-#### C# Events and Delegates
-Traditional C# events provide a more code-based approach to event handling.
+#### C# Events и Delegates
+Традиционные события C# обеспечивают более программный подход к обработке событий.
 
 
-Delegates are type-safe function pointers, and events are a way to broadcast messages to multiple listeners.
+Делегаты — типобезопасные указатели на функции, события — способ рассылки сообщений нескольким подписчикам.
 
 ```csharp
 public class GameEvents : MonoBehaviour {
-    // Delegate definition
+    // Определение делегата
     public delegate void GameStateHandler();
     public delegate void ScoreHandler(int newScore);
 
-    // Event declaration
+    // Объявление события
     public static event GameStateHandler OnGameStart;
     public static event GameStateHandler OnGameOver;
     public static event ScoreHandler OnScoreChanged;
 
-    // Methods to trigger events
+    // Методы для вызова событий
     public static void TriggerGameStart() {
         OnGameStart?.Invoke();
     }
@@ -749,13 +747,13 @@ public class GameEvents : MonoBehaviour {
 // Example usage in another class
 public class Player : MonoBehaviour {
     void OnEnable() {
-        // Subscribe to events
+        // Подписка на события
         GameEvents.OnGameStart += HandleGameStart;
         GameEvents.OnGameOver += HandleGameOver;
     }
 
     void OnDisable() {
-        // Unsubscribe from events
+        // Отписка от событий
         GameEvents.OnGameStart -= HandleGameStart;
         GameEvents.OnGameOver -= HandleGameOver;
     }
@@ -770,22 +768,22 @@ public class Player : MonoBehaviour {
 }
 ```
 
-### Scriptable Objects
+### Скриптовые объекты
 ```csharp
-// ScriptableObjects are data containers that you can use to save large amounts of data, independent of class instances.
+// ScriptableObjects — контейнеры данных для хранения больших объёмов данных, независимо от экземпляров классов.
 [CreateAssetMenu(fileName = "NewData", menuName = "ScriptableObjects/Data")]
 public class Data : ScriptableObject {
     public string dataName;
     public int dataValue;
 }
 
-// Usage
+// Использование
 Data myData = ScriptableObject.CreateInstance<Data>();
 ```
 
-### Custom Editor Scripts
+### Пользовательские скрипты редактора
 ```csharp
-// Custom Editor scripts allow you to create custom inspectors and windows in the Unity Editor.
+// Пользовательские скрипты редактора позволяют создавать кастомные инспекторы и окна в Unity Editor.
 using UnityEditor;
 using UnityEngine;
 
@@ -803,13 +801,13 @@ public class MyComponentEditor : Editor {
 ```
 
 ### Async/Await
-Async/await is a programming pattern that simplifies asynchronous programming. It allows you to write asynchronous code that looks and behaves like synchronous code. This is particularly useful for operations that might take time, such as:
-- Loading resources
-- Network requests
-- File operations
-- Scene loading
+Async/await — паттерн программирования, упрощающий асинхронный код. Позволяет писать асинхронный код, который выглядит и ведёт себя как синхронный. Особенно полезен для операций, требующих времени:
+- Загрузка ресурсов
+- Сетевые запросы
+- Файловые операции
+- Загрузка сцен
 
-#### Basic Structure
+#### Базовая структура
 ```csharp
 using UnityEngine;
 using System.Threading.Tasks;
@@ -817,7 +815,7 @@ using System;
 
 public class AsyncAwaitExample : MonoBehaviour
 {
-    // Basic async/await structure in Unity
+    // Базовая структура async/await в Unity
     private async void Start()
     {
         Debug.Log("Starting async operation");
@@ -825,16 +823,16 @@ public class AsyncAwaitExample : MonoBehaviour
         Debug.Log("Async operation completed");
     }
 
-    // IMPORTANT: Unity's Update loop and MonoBehaviour methods must be void
-    // They cannot be async Task
-    private void Update() { }      // Correct
-    // private async Task Update() {} // Wrong!
+    // ВАЖНО: методы Update и MonoBehaviour должны возвращать void
+    // Они не могут быть async Task
+    private void Update() { }      // Правильно
+    // private async Task Update() {} // Неправильно!
 }
 ```
 
-#### Loading Resources
+#### Загрузка ресурсов
 ```csharp
-// Loading resources asynchronously with progress tracking
+// Асинхронная загрузка ресурсов с отслеживанием прогресса
 private async Task<Texture2D> LoadTextureAsync()
 {
     var resourcePath = "Textures/MyTexture";
@@ -842,18 +840,18 @@ private async Task<Texture2D> LoadTextureAsync()
     
     while (!request.isDone)
     {
-        // Report progress
+        // Сообщить о прогрессе
         Debug.Log($"Loading: {request.progress * 100}%");
-        await Task.Yield(); // Let other operations continue
+        await Task.Yield(); // Дать возможность продолжить другим операциям
     }
 
     return request.asset as Texture2D;
 }
 ```
 
-#### Web Requests
+#### Веб-запросы
 ```csharp
-// Making web requests with progress tracking
+// Выполнение веб-запросов с отслеживанием прогресса
 private async Task<string> FetchDataAsync(string url)
 {
     using var request = UnityWebRequest.Get(url);
@@ -872,15 +870,15 @@ private async Task<string> FetchDataAsync(string url)
 }
 ```
 
-#### Scene Loading
+#### Загрузка сцен
 ```csharp
-// Loading scenes asynchronously with progress tracking
+// Асинхронная загрузка сцен с отслеживанием прогресса
 private async Task LoadSceneAsync(string sceneName)
 {
     var operation = SceneManager.LoadSceneAsync(sceneName);
-    operation.allowSceneActivation = false; // Don't activate immediately
+    operation.allowSceneActivation = false; // Не активировать сразу
 
-    while (operation.progress < 0.9f) // 0.9 is the progress before activation
+    while (operation.progress < 0.9f) // 0.9 — прогресс непосредственно перед активацией
     {
         Debug.Log($"Loading scene: {operation.progress * 100}%");
         await Task.Yield();
@@ -891,22 +889,22 @@ private async Task LoadSceneAsync(string sceneName)
 }
 ```
 
-#### Parallel Operations
+#### Параллельные операции
 ```csharp
-// Running multiple async operations in parallel
+// Параллельный запуск нескольких асинхронных операций
 private async Task LoadGameAssetsAsync()
 {
     try
     {
-        // Start multiple operations simultaneously
+        // Запустить несколько операций одновременно
         var textureTask = LoadTextureAsync();
         var dataTask = FetchDataAsync("https://api.example.com/gamedata");
         var sceneTask = LoadSceneAsync("Level1");
 
-        // Wait for all tasks to complete
+        // Дождаться завершения всех задач
         await Task.WhenAll(textureTask, dataTask, sceneTask);
         
-        // All assets are now loaded
+        // Все ресурсы загружены
         Debug.Log("All assets loaded successfully");
     }
     catch (Exception e)
@@ -916,9 +914,9 @@ private async Task LoadGameAssetsAsync()
 }
 ```
 
-#### Timeout Handling
+#### Обработка таймаута
 ```csharp
-// Implementing timeout for async operations
+// Реализация таймаута для асинхронных операций
 private async Task<T> WithTimeout<T>(Task<T> task, TimeSpan timeout)
 {
     var timeoutTask = Task.Delay(timeout);
@@ -927,7 +925,7 @@ private async Task<T> WithTimeout<T>(Task<T> task, TimeSpan timeout)
     if (completedTask == timeoutTask)
         throw new TimeoutException("Operation timed out");
             
-    return await task; // Unwrap the result or propagate the exception
+    return await task; // Извлечь результат или передать исключение дальше
 }
 
 // Complete example using timeout handling
@@ -935,20 +933,20 @@ private async Task InitializeGameAsync()
 {
     try
     {
-        // Show loading screen
+        // Показать экран загрузки
         ShowLoadingUI();
 
-        // Start multiple loading operations with timeout
+        // Запустить несколько операций загрузки с таймаутом
         var loadingTask = Task.WhenAll(
             LoadTextureAsync(),
             FetchDataAsync("https://api.example.com/gamedata"),
             LoadSceneAsync("MainLevel")
         );
 
-        // Wait for all operations with a 30-second timeout
+        // Ждать завершения всех операций с таймаутом 30 секунд
         await WithTimeout(loadingTask, TimeSpan.FromSeconds(30));
 
-        // Hide loading screen
+        // Скрыть экран загрузки
         HideLoadingUI();
         Debug.Log("Game initialized successfully");
     }
@@ -965,22 +963,22 @@ private async Task InitializeGameAsync()
 }
 ```
 
-#### Best Practices
-When using async/await in Unity, follow these best practices:
+#### Лучшие практики
+При использовании async/await в Unity следуйте этим рекомендациям:
 
-1. Always handle exceptions in async methods
-2. Use Task.Yield() instead of Task.Delay() for frame-by-frame operations
-3. Remember that async void should only be used for event handlers and MonoBehaviour methods
-4. Use CancellationToken when possible to support cancellation
-5. Implement timeout handling for network operations
-6. Don't block the main thread with .Result or .Wait()
-7. Use Task.WhenAll for parallel operations
+1. Всегда обрабатывайте исключения в async-методах
+2. Используйте Task.Yield() вместо Task.Delay() для пофреймовых операций
+3. Помните, что async void следует использовать только для обработчиков событий и методов MonoBehaviour
+4. По возможности используйте CancellationToken для поддержки отмены
+5. Реализуйте обработку таймаута для сетевых операций
+6. Не блокируйте основной поток через .Result или .Wait()
+7. Используйте Task.WhenAll для параллельных операций
 
-## Design Patterns
+## Паттерны проектирования
 ### Singleton
 
 ```csharp
-// Define singleton class
+// Определение класса Singleton
 public class SingletonClass: MonoBehaviour {
     private static SingletonClass instance;
 
@@ -998,7 +996,7 @@ public class SingletonClass: MonoBehaviour {
     }
 }
 
-// Use it in another class
+// Использование в другом классе
 public class AnotherClass: MonoBehaviour {
 
     private void Awake() {
@@ -1007,70 +1005,70 @@ public class AnotherClass: MonoBehaviour {
 }
 ```
 
-### Factory Pattern
+### Фабричный метод (Factory Pattern)
 ```csharp
-// Interface for the enemy
+// Интерфейс врага
 public interface IEnemy {
     void Attack();
     void TakeDamage(int damage);
 }
 
-// Concrete implementation of the enemy: Goblin
+// Конкретная реализация врага: Гоблин
 public class Goblin : IEnemy {
     public void Attack() => Debug.Log("Goblin attacking!");
     public void TakeDamage(int damage) => Debug.Log($"Goblin taking {damage} damage.");
 }
 
-// Concrete implementation of the enemy: Orc
+// Конкретная реализация врага: Орк
 public class Orc : IEnemy {
     public void Attack() => Debug.Log("Orc attacking!");
     public void TakeDamage(int damage) => Debug.Log($"Orc taking {damage} damage.");
 }
 
-// Factory interface for creating enemies
+// Интерфейс фабрики для создания врагов
 public interface IEnemyFactory {
     IEnemy CreateEnemy();
 }
 
-// Concrete implementation of the factory: GoblinFactory
+// Конкретная реализация фабрики: GoblinFactory
 public class GoblinFactory : IEnemyFactory {
     public IEnemy CreateEnemy() => new Goblin();
 }
 
-// Concrete implementation of the factory: OrcFactory
+// Конкретная реализация фабрики: OrcFactory
 public class OrcFactory : IEnemyFactory {
     public IEnemy CreateEnemy() => new Orc();
 }
 
-// Client class using the factory to create and interact with enemies
+// Клиентский класс, использующий фабрику для создания и взаимодействия с врагами
 public class GameManager : MonoBehaviour {
     private void Start() {
         InteractWithEnemy(new GoblinFactory());
         InteractWithEnemy(new OrcFactory());
 
-        // You can introduce new concrete implementations of IEnemy
-        // without modifying existing client code
-        // adhering to the open/closed principle of SOLID design 
+        // Можно добавлять новые конкретные реализации IEnemy
+        // не изменяя существующий клиентский код
+        // следуя принципу открытости/закрытости из SOLID 
     }
 
     private void InteractWithEnemy(IEnemyFactory factory) {
         IEnemy enemy = factory.CreateEnemy();
 
-        // Consistent interaction regardless of the enemy type
+        // Единообразное взаимодействие независимо от типа врага
         enemy.Attack();
         enemy.TakeDamage(20);
     }
 }
 ```
 
-### Observer Pattern
+### Наблюдатель (Observer Pattern)
 ```csharp
-// Observer interface
+// Интерфейс наблюдателя
 public interface IObserver {
     void UpdateObserver(string message);
 }
 
-// Concrete implementation of the observer
+// Конкретная реализация наблюдателя
 public class ConcreteObserver : IObserver {
     private string name;
 
@@ -1083,7 +1081,7 @@ public class ConcreteObserver : IObserver {
     }
 }
 
-// Subject class
+// Класс субъекта
 public class Subject {
     private List<IObserver> observers = new List<IObserver>();
 
@@ -1102,7 +1100,7 @@ public class Subject {
     }
 }
 
-// Example of usage
+// Пример использования
 public class ObserverExample : MonoBehaviour {
     private void Start() {
         Subject subject = new Subject();
@@ -1113,21 +1111,21 @@ public class ObserverExample : MonoBehaviour {
         subject.AddObserver(observer1);
         subject.AddObserver(observer2);
 
-        // Notify all observers
+        // Уведомить всех наблюдателей
         subject.NotifyObservers("Hello Observers!");
     }
 }
 
 ```
 
-### Command Pattern
+### Команда (Command Pattern)
 ```csharp
-// Command interface
+// Интерфейс команды
 public interface ICommand {
     void Execute();
 }
 
-// Concrete command classes
+// Конкретные классы команд
 public class MoveCommand : ICommand {
     private Transform transform;
     private Vector3 direction;
@@ -1144,7 +1142,7 @@ public class MoveCommand : ICommand {
     }
 }
 
-// Invoker class
+// Класс инициатора
 public class CommandInvoker {
     private Stack<ICommand> commandStack = new Stack<ICommand>();
 
@@ -1156,12 +1154,12 @@ public class CommandInvoker {
     public void Undo() {
         if (commandStack.Count > 0) {
             var command = commandStack.Pop();
-            // Implement an undo method if necessary
+            // Реализовать метод отмены при необходимости
         }
     }
 }
 
-// Usage
+// Использование
 public class CommandUser : MonoBehaviour {
     private CommandInvoker invoker = new CommandInvoker();
 
@@ -1171,31 +1169,31 @@ public class CommandUser : MonoBehaviour {
             invoker.ExecuteCommand(moveUp);
         }
 
-        // Add other directions and invoker.Undo() for undos
+        // Добавьте другие направления и invoker.Undo() для отмены
     }
 }
 ```
 
-### State Pattern
-The State Pattern allows an object to alter its behavior when its internal state changes. It encapsulates state-specific behavior and makes state transitions explicit.
+### Паттерн «Состояние» (State Pattern)
+Паттерн «Состояние» позволяет объекту изменять своё поведение при изменении внутреннего состояния. Инкапсулирует поведение, специфичное для каждого состояния, и делает переходы между ними явными.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// State interface
+// Интерфейс состояния
 public interface IState {
     void Enter();
     void Update();
     void Exit();
 }
 
-// Example state implementation
+// Пример реализации состояния
 public class IdleState : IState {
     public void Enter() => Debug.Log("Entered Idle State");
     public void Update() => Debug.Log("Updating Idle State");
     public void Exit() => Debug.Log("Exited Idle State");
 }
 
-// State machine that manages state transitions
+// Машина состояний, управляющая переходами
 public class StateMachine : MonoBehaviour {
     private IState currentState;
 
@@ -1211,30 +1209,30 @@ public class StateMachine : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Game Onboarding System
-A complete example showing how to implement a game onboarding/tutorial system using the State Pattern. This implementation demonstrates how to:
-- Manage different tutorial states (movement, combat, inventory)
-- Handle state transitions
-- Track player progress through the tutorial
+#### Подробный пример — система онбординга
+Полный пример реализации системы онбординга/туториала с использованием паттерна «Состояние». Демонстрирует:
+- Управление различными состояниями туториала (движение, бой, инвентарь)
+- Обработку переходов между состояниями
+- Отслеживание прогресса игрока в туториале
 
-👉 [View Full Implementation](Patterns/StatePattern/README.md)
+👉 [Посмотреть полную реализацию](Patterns/StatePattern/README.md)
 
-### Strategy Pattern
-The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern lets the algorithm vary independently from clients that use it.
+### Паттерн «Стратегия» (Strategy Pattern)
+Паттерн «Стратегия» определяет семейство алгоритмов, инкапсулирует каждый из них и делает их взаимозаменяемыми. Позволяет алгоритму изменяться независимо от клиентов, которые его используют.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// Strategy interface
+// Интерфейс стратегии
 public interface IStrategy {
     void Execute();
 }
 
-// Example strategy implementation
+// Пример реализации стратегии
 public class AttackStrategy : IStrategy {
     public void Execute() => Debug.Log("Performing attack!");
 }
 
-// Context class that uses the strategy
+// Контекстный класс, использующий стратегию
 public class Character : MonoBehaviour {
     private IStrategy strategy;
 
@@ -1248,15 +1246,15 @@ public class Character : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Combat System
-A complete example showing how to implement a flexible combat system using the Strategy Pattern. This implementation demonstrates how to:
-- Define different attack strategies (melee, ranged, area)
-- Switch between strategies at runtime
-- Encapsulate combat algorithms
+#### Подробный пример — боевая система
+Полный пример реализации гибкой боевой системы с использованием паттерна «Стратегия». Демонстрирует:
+- Определение различных стратегий атаки (ближний бой, дальний, площадная)
+- Переключение между стратегиями во время выполнения
+- Инкапсуляцию боевых алгоритмов
 
-👉 [View Full Implementation](Patterns/StrategyPattern/README.md)
+👉 [Посмотреть полную реализацию](Patterns/StrategyPattern/README.md)
 
-### Object Pooling Pattern
+### Пул объектов (Object Pooling Pattern)
 ```csharp
 using System.Collections.Generic;
 using UnityEngine;
@@ -1313,7 +1311,7 @@ public class ObjectPool : MonoBehaviour
     }
 }
 
-// Usage example
+// Использование example
 public class GameManager : MonoBehaviour
 {
     public ObjectPool objectPool;
@@ -1328,18 +1326,18 @@ public class GameManager : MonoBehaviour
 }
 ```
 
-### Chain of Responsibility Pattern
-The Chain of Responsibility pattern creates a chain of handler objects for a request. Each handler contains a reference to the next handler in the chain and decides either to handle the request or pass it to the next handler.
+### Цепочка обязанностей (Chain of Responsibility Pattern)
+Паттерн «Цепочка обязанностей» создаёт цепочку объектов-обработчиков для запроса. Каждый обработчик содержит ссылку на следующий и решает — обработать запрос самостоятельно или передать дальше.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// Handler interface
+// Интерфейс обработчика
 public interface IHandler {
     void SetNext(IHandler handler);
     void HandleRequest(string request);
 }
 
-// Base handler class
+// Базовый класс обработчика
 public abstract class BaseHandler : IHandler {
     protected IHandler nextHandler;
 
@@ -1354,7 +1352,7 @@ public abstract class BaseHandler : IHandler {
     }
 }
 
-// Concrete handlers
+// Конкретные обработчики
 public class UIHandler : BaseHandler {
     public override void HandleRequest(string request) {
         if (request == "UI_CLICK") {
@@ -1375,12 +1373,12 @@ public class GameplayHandler : BaseHandler {
     }
 }
 
-// Usage
+// Использование
 public class InputManager : MonoBehaviour {
     private IHandler handlerChain;
 
     private void Start() {
-        // Set up the chain
+        // Настройка цепочки
         var uiHandler = new UIHandler();
         var gameplayHandler = new GameplayHandler();
         
@@ -1389,7 +1387,7 @@ public class InputManager : MonoBehaviour {
     }
 
     private void Update() {
-        // Example: Process different types of input
+        // Пример: обработка различных типов ввода
         if (Input.GetMouseButtonDown(0)) {
             handlerChain.HandleRequest("UI_CLICK");
         }
@@ -1400,17 +1398,17 @@ public class InputManager : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Input Handling System
-A complete example showing how to implement a robust input handling system using the Chain of Responsibility Pattern. This implementation demonstrates how to:
-- Handle different types of input (UI, gameplay, cutscenes)
-- Process input based on game state
-- Chain multiple handlers together
+#### Подробный пример — система обработки ввода
+Полный пример реализации надёжной системы обработки ввода с использованием паттерна «Цепочка обязанностей». Демонстрирует:
+- Обработку различных типов ввода (UI, геймплей, катсцены)
+- Обработку ввода в зависимости от состояния игры
+- Объединение нескольких обработчиков в цепочку
 
-👉 [View Full Implementation](Patterns/ChainOfResponsibility/README.md)
+👉 [Посмотреть полную реализацию](Patterns/ChainOfResponsibility/README.md)
 
-## Shortcuts
+## Горячие клавиши
 
-### Scene View Editing
+### Редактирование в окне сцены
 ```
 Q - Pan tool
 W - Move tool
@@ -1426,7 +1424,7 @@ CTRL/CMD + P - Play/Stop
 CTRL/CMD + SHIFT + P - Pause
 ```
 
-### Scene View Navigation
+### Навигация в окне сцены
 ```
 Alt + Left Click - Orbit around scene view pivot
 Alt + Right Click - Zoom in/out
@@ -1437,7 +1435,7 @@ CTRL/CMD + ALT + F - Frame selected
 Hold Right Click - Free look (FPS style)
 ```
 
-### Hierarchy Management
+### Управление иерархией
 ```
 CTRL/CMD + SHIFT + N - Create empty GameObject
 ALT + SHIFT + N - Create empty child GameObject
@@ -1447,26 +1445,26 @@ F2 - Rename selected
 Delete - Delete selected
 ```
 
-### Layout
+### Разметка
 ```
 CTRL/CMD + 1-5 - Switch between layouts
 SHIFT + Space - Toggle maximize current window
 ```
 
-## Practical Use Cases
+## Практические примеры
 
-### Check if object is on the ground
+### Проверка приземления объекта
 
 ```csharp
 RaycastHit hit;
 
-// Unlike this example, most of the time you should pass a layerMask as the last option to hit only to the ground
+// В отличие от этого примера, обычно следует передавать layerMask для обнаружения только земли
 if (Physics.Raycast(transform.position, Vector3.down, out hit, 0.5f)) {
    Debug.log("Hit something below!");
 }
 ```
 
-### Get the transform of a Body Bone
+### Получение трансформа кости тела
 
 ```csharp
 Animator animator;
@@ -1474,7 +1472,7 @@ Animator animator;
 Transform transform = animator.GetBoneTransform(HumanBodyBones.Head);
 ```
 
-### Make object look at the camera
+### Поворот объекта лицом к камере
 
 ```csharp
 var camPosition = Camera.main.transform.position;
@@ -1482,25 +1480,25 @@ var camPosition = Camera.main.transform.position;
 transform.rotation = Quaternion.LookRotation(transform.position - camPosition);
 ```
 
-### Camera follow & orbit
+### Следование и облёт камеры
 
-[Full example](docs/practical-use-cases/camera-follow-orbit.md) – smooth follow using `Vector3.SmoothDamp` while orbiting via yaw/pitch input.
+[Полный пример](docs/practical-use-cases/camera-follow-orbit.md) — плавное следование через `Vector3.SmoothDamp` с орбитальным вращением по входным данным рысканья/тангажа.
 
 ```csharp
-// Accumulate yaw/pitch input
+// Накапливать ввод по рысканью/тангажу
 yaw += lookInput.x * orbitSpeed * Time.deltaTime;
 pitch = Mathf.Clamp(pitch - lookInput.y * orbitSpeed * Time.deltaTime, pitchLimits.x, pitchLimits.y);
 
-// Build rotation and place camera
+// Построить вращение и разместить камеру
 Quaternion rotation = Quaternion.AngleAxis(yaw, Vector3.up) * Quaternion.AngleAxis(pitch, Vector3.right);
 Vector3 desiredPosition = target.position + rotation * followOffset;
 transform.position = Vector3.SmoothDamp(transform.position, desiredPosition, ref velocity, followSmoothTime);
 transform.rotation = Quaternion.LookRotation(target.position - transform.position, Vector3.up);
 ```
 
-### Fade UI element
+### Затухание UI-элемента
 
-[Full example](docs/practical-use-cases/fade-ui-element.md) – coroutine-driven `CanvasGroup` fade for prompts and HUD panels.
+[Полный пример](docs/practical-use-cases/fade-ui-element.md) — управляемое корутиной затухание `CanvasGroup` для подсказок и панелей HUD.
 
 ```csharp
 IEnumerator Fade(CanvasGroup group, float targetAlpha, float duration)
@@ -1517,7 +1515,7 @@ IEnumerator Fade(CanvasGroup group, float targetAlpha, float duration)
 }
 ```
 
-### Load next scene
+### Загрузка следующей сцены
 
 ```csharp
 var nextSceneToLoad = SceneManager.GetActiveScene().buildIndex + 1;
@@ -1528,11 +1526,3 @@ if (nextSceneToLoad < totalSceneCount) {
 }
 ```
 
-## TBD (To Be Documented)
-
-The following topics are planned to be added to the documentation:
-
-### Scripting
-- [ ] More advanced scripting topics coming soon
-
----

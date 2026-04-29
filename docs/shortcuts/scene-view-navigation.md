@@ -1,12 +1,12 @@
-# Unity Scene View Navigation Shortcuts
+# Горячие клавиши навигации в режиме сцены Unity
 
 ```
-Alt + Left Click - Orbit around scene view pivot
-Alt + Right Click - Zoom in/out
-Middle Mouse - Orbit
-Middle Mouse + Alt - Zoom
-F - Focus on selected object
-CTRL/CMD + ALT + F - Frame selected
-Hold Right Click - Free look (FPS style)
+Alt + Левая кнопка мыши - Вращение вокруг точки обзора сцены
+Alt + Правая кнопка мыши - Приближение/отдаление
+Колёсико мыши (зажать) - Вращение обзора
+Колёсико мыши + Alt - Масштабирование
+F - Сфокусироваться на выбранном объекте
+CTRL/CMD + ALT + F - Сфокусировать вид на выбранном
+Зажать правую кнопку мыши - Свободный обзор (в стиле шутера от первого лица)
 ```
 

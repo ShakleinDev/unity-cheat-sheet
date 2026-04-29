@@ -1,15 +1,15 @@
-# Unity Fade UI Element - CanvasGroup Alpha Animation
+# Unity Fade UI Element - Анимация прозрачности CanvasGroup
 
-Smoothly show or hide world-space prompts, HUD panels, or tooltips by lerping a `CanvasGroup` alpha. Coroutines or tweens control the timing without needing a full animation clip.
+Плавно показывайте или скрывайте подсказки в мировом пространстве, HUD-панели или тултипы, интерполируя альфу `CanvasGroup`. Корутины или твины управляют временем без необходимости создавать полноценный анимационный клип.
 
-## Behaviour
+## Поведение
 
-1. Cache the `CanvasGroup` component (add one if missing).
-2. Start a coroutine when you want to fade in/out.
-3. Lerping the alpha each frame moves the value toward the target.
-4. Toggle `interactable` and `blocksRaycasts` only when the element is visible.
+1. Закэшировать компонент `CanvasGroup` (добавить, если отсутствует).
+2. Запустить корутину при необходимости появления/исчезновения.
+3. Интерполяция альфы каждый кадр приближает значение к целевому.
+4. Переключать `interactable` и `blocksRaycasts` только когда элемент видим.
 
-## Example
+## Пример
 
 ```csharp
 using System.Collections;
@@ -80,9 +80,9 @@ public class UIFader : MonoBehaviour
 }
 ```
 
-### Notes
+### Примечания
 
-- Swap `Time.unscaledDeltaTime` for `Time.deltaTime` if you want fades to obey time-scale changes.
-- For instant toggles (e.g., initial state), set `canvasGroup.alpha` directly before starting a fade.
-- Integrate with UI events: call `FadeIn` when the player enters a trigger and `FadeOut` after a timeout or exit.
-- If you prefer not to use coroutines, drive the fade in `Update` by lerping toward the target alpha with your own timer.
+- Замените `Time.unscaledDeltaTime` на `Time.deltaTime`, если хотите, чтобы затухание подчинялось изменениям масштаба времени.
+- Для мгновенного переключения (например, начального состояния) устанавливайте `canvasGroup.alpha` напрямую перед запуском затухания.
+- Интегрируйте с UI-событиями: вызывайте `FadeIn`, когда игрок входит в триггер, и `FadeOut` после таймаута или выхода.
+- Если не хотите использовать корутины, управляйте затуханием в `Update`, интерполируя к целевой альфе с собственным таймером.

@@ -1,30 +1,30 @@
-# Unity Rigidbody - Physics Component Guide
+# Unity Rigidbody — Руководство по физическому компоненту
 
-Rigidbodies give GameObjects mass, gravity, and collision response within Unity's 3D physics engine. They are the backbone of any simulation where forces, impulses, and realistic motion matter—from falling props to fully simulated characters. Understanding how to configure and drive them keeps gameplay responsive and stable.
+Rigidbody придаёт игровым объектам массу, гравитацию и отклик на столкновения в рамках трёхмерного физического движка Unity. Это основа любой симуляции, где важны силы, импульсы и реалистичное движение — от падающих предметов до полностью симулируемых персонажей. Понимание настройки и управления этим компонентом обеспечивает отзывчивость и стабильность геймплея.
 
-## Adding a Rigidbody
+## Добавление Rigidbody
 
-1. Select the GameObject with a collider and choose `Add Component > Rigidbody`.
-2. Unity immediately promotes the collider to a **dynamic** body: it becomes influenced by gravity and other forces.
-3. Configure mass, drag, and collision detection in the Inspector before entering play mode to avoid unexpected snaps.
+1. Выберите GameObject с коллайдером и нажмите `Add Component > Rigidbody`.
+2. Unity немедленно переводит коллайдер в режим **динамического** тела: оно начинает испытывать влияние гравитации и других сил.
+3. Настройте массу, сопротивление и обнаружение столкновений в Инспекторе до входа в режим воспроизведения, чтобы избежать неожиданных рывков.
 
-Common setup tips:
-- Use **uniform scale** (1,1,1) on physics objects; non-uniform scale can lead to unstable collisions.
-- Pair MeshColliders with convex meshes when the object needs to be dynamic; non-convex mesh colliders are static-only.
+Общие советы по настройке:
+- Используйте **равномерный масштаб** (1,1,1) для физических объектов; неравномерный масштаб может приводить к нестабильным столкновениям.
+- Сочетайте MeshCollider с выпуклыми мешами, если объект должен быть динамическим; невыпуклые mesh-коллайдеры подходят только для статических объектов.
 
-## Key Properties
+## Основные свойства
 
-- **Mass** – affects inertia and impulse response. Absolute units are arbitrary; focus on relative values (e.g., a crate at 20 vs. player at 60). For stability keep mass between 0.1 and 10 unless you have a reason to deviate.
-- **Drag / Angular Drag** – slow linear/angular velocity each physics step. High drag acts like air resistance; leave at default unless you need heavy damping.
-- **Use Gravity** – toggles the global gravity vector. Disable for floating objects or custom gravity systems.
-- **Is Kinematic** – when true, physics forces no longer affect the body. You drive motion manually (via `MovePosition`, `MoveRotation`, or transforms) but collisions still generate trigger messages.
-- **Interpolate** – smooths visible motion between physics ticks. `Interpolate` for moving bodies seen by the player, `Extrapolate` rarely needed, `None` for static visuals.
-- **Collision Detection** – choose `Discrete` for slow bodies, `Continuous` for fast-moving colliders, and `Continuous Dynamic` for hitscan-critical objects (bullets). Continuous options cost more but prevent tunnelling.
-- **Constraints** – lock position/rotation axes to prevent sliding or tipping.
+- **Mass (Масса)** — влияет на инерцию и реакцию на импульсы. Абсолютные единицы произвольны; ориентируйтесь на относительные значения (например, ящик — 20, игрок — 60). Для стабильности держите массу в диапазоне 0.1–10 без особой причины выходить за него.
+- **Drag / Angular Drag (Линейное/угловое сопротивление)** — уменьшают линейную/угловую скорость на каждом шаге физики. Высокое сопротивление работает как сопротивление воздуха; оставьте по умолчанию, если не нужно сильное демпфирование.
+- **Use Gravity (Использовать гравитацию)** — включает/выключает глобальный вектор гравитации. Отключайте для парящих объектов или при использовании пользовательской системы гравитации.
+- **Is Kinematic (Кинематический режим)** — при включении физические силы перестают воздействовать на тело. Вы управляете движением вручную (через `MovePosition`, `MoveRotation` или трансформ), но столкновения по-прежнему генерируют сообщения триггеров.
+- **Interpolate (Интерполяция)** — сглаживает видимое движение между тиками физики. `Interpolate` — для движущихся объектов, видимых игроком; `Extrapolate` — используется редко; `None` — для статической визуализации.
+- **Collision Detection (Обнаружение столкновений)** — выбирайте `Discrete` для медленных тел, `Continuous` для быстро движущихся коллайдеров и `Continuous Dynamic` для критичных к точности объектов (например, пуль). Непрерывные варианты дороже, но предотвращают прохождение сквозь объекты.
+- **Constraints (Ограничения)** — блокируют оси позиции/вращения, предотвращая скольжение или опрокидывание.
 
-## Moving Rigidbodies
+## Перемещение Rigidbody
 
-Physics runs in fixed time steps. Apply forces inside `FixedUpdate` so inputs align with the simulation.
+Физика работает с фиксированным шагом времени. Применяйте силы внутри `FixedUpdate`, чтобы входные данные совпадали с симуляцией.
 
 ```csharp
 using UnityEngine;
@@ -39,70 +39,70 @@ public class ForceMover : MonoBehaviour
     private void FixedUpdate()
     {
         var input = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
-        var force = transform.TransformDirection(input.normalized) * thrust;
-        body.AddForce(force, ForceMode.Acceleration);
+        var force = transform.TransformDirection(input.normalized) * thrust; // Направление силы в мировых координатах
+        body.AddForce(force, ForceMode.Acceleration); // Применяем ускорение, независимое от массы
     }
 }
 ```
 
-Movement options:
-- **Forces & Torques** – `AddForce`, `AddTorque`, `AddExplosionForce`. Use `ForceMode.Acceleration` for mass-independent control, `Impulse` for instant pushes.
-- **Velocity changes** – set `body.velocity`/`angularVelocity` for immediate adjustments; useful for custom controllers.
-- **Position/Rotation** – `MovePosition` and `MoveRotation` respect collision detection while targeting a specific transform. Works well for kinematic bodies driven by animation.
+Варианты перемещения:
+- **Силы и крутящие моменты** — `AddForce`, `AddTorque`, `AddExplosionForce`. Используйте `ForceMode.Acceleration` для управления, независимого от массы, `Impulse` — для мгновенных толчков.
+- **Изменение скорости** — установите `body.velocity`/`angularVelocity` для немедленных корректировок; удобно для пользовательских контроллеров.
+- **Позиция/поворот** — `MovePosition` и `MoveRotation` учитывают обнаружение столкновений при достижении целевого трансформа. Хорошо подходят для кинематических тел, управляемых анимацией.
 
-## Simulation Modes
+## Режимы симуляции
 
-Unity categorises physics bodies as:
-- **Dynamic** – default Rigidbody. Responds to forces, collisions, and gravity.
-- **Kinematic** – Rigidbody with `Is Kinematic` enabled. Ignores forces; you drive its transform explicitly. Collisions act like triggers unless you move it with `MovePosition/MoveRotation` each FixedUpdate.
-- **Static** – Collider without a Rigidbody. Does not move; the physics engine treats it as immovable world geometry.
+Unity классифицирует физические тела следующим образом:
+- **Dynamic (Динамическое)** — стандартный Rigidbody. Реагирует на силы, столкновения и гравитацию.
+- **Kinematic (Кинематическое)** — Rigidbody с включённым `Is Kinematic`. Игнорирует силы; вы явно управляете его трансформом. Столкновения работают как триггеры, если не перемещать тело через `MovePosition/MoveRotation` в каждом FixedUpdate.
+- **Static (Статическое)** — коллайдер без Rigidbody. Не двигается; физический движок считает его неподвижной геометрией мира.
 
-Switching between modes at runtime is valid, but do it sparingly to avoid physics hiccups (e.g., toggle kinematic during grabbing).
+Переключение между режимами во время выполнения допустимо, но делайте это редко во избежание физических сбоев (например, переключайте в кинематический режим во время захвата предмета).
 
-## Sleeping and Activation
+## Сон и активация
 
-To save CPU, physics bodies “sleep” when velocity stays near zero. When asleep they ignore forces until disturbed.
+Для экономии ЦП физические тела «засыпают», когда их скорость приближается к нулю. В спящем режиме они игнорируют силы до тех пор, пока их не потревожат.
 
-- `Rigidbody.IsSleeping()` / `Rigidbody.WakeUp()` let you check or wake manually.
-- Calling `AddForce` automatically wakes a sleeping body.
-- Disable `sleeping` only if your project needs constant simulation; otherwise keep the default behaviour for performance.
+- `Rigidbody.IsSleeping()` / `Rigidbody.WakeUp()` — позволяют проверить состояние или разбудить тело вручную.
+- Вызов `AddForce` автоматически будит спящее тело.
+- Отключайте `sleeping` только если проекту нужна постоянная симуляция; в противном случае оставляйте поведение по умолчанию для производительности.
 
-## Collision Tuning
+## Настройка столкновений
 
-- Match collider types to behaviour: `BoxCollider` for crates, `CapsuleCollider` for characters, `SphereCollider` for fast checks. Complex shapes use `MeshCollider` (convex for dynamic, non-convex for static).
-- Configure **Physics Materials** to tweak friction and bounciness. High friction + locked rotation prevents sliding platforms.
-- Use **layer-based collision matrix** (`Edit > Project Settings > Physics`) to disable unnecessary collisions early.
-- Monitor **contact offset** (default 0.01). Lower values increase precision but may cause jitter.
+- Подбирайте тип коллайдера под поведение объекта: `BoxCollider` для ящиков, `CapsuleCollider` для персонажей, `SphereCollider` для быстрых проверок. Сложные формы используют `MeshCollider` (выпуклый — для динамических, невыпуклый — для статических).
+- Настройте **Physics Materials (Физические материалы)** для регулировки трения и упругости. Высокое трение + заблокированное вращение предотвращают скольжение платформ.
+- Используйте **матрицу столкновений по слоям** (`Edit > Project Settings > Physics`) для раннего отключения ненужных столкновений.
+- Следите за **contact offset** (по умолчанию 0.01). Меньшие значения повышают точность, но могут вызывать дрожание.
 
 ## Rigidbody vs Rigidbody2D
 
-Unity maintains separate 3D and 2D physics engines. If you work on 2D projects:
+Unity поддерживает отдельные движки физики для 3D и 2D. При работе с 2D-проектами:
 
-- Replace the component with `Rigidbody2D` and pair it with 2D colliders.
-- API calls mirror 3D names (`AddForce`, `velocity`, etc.) but live in `UnityEngine`.Physics2D.
-- 2D uses Box2D under the hood; expect different tuning defaults (gravity, drag, mass range).
+- Замените компонент на `Rigidbody2D` и используйте 2D-коллайдеры.
+- Вызовы API повторяют 3D-названия (`AddForce`, `velocity` и т.д.), но относятся к `UnityEngine.Physics2D`.
+- В основе 2D-физики лежит Box2D; ожидайте других значений по умолчанию (гравитация, сопротивление, диапазон масс).
 
-## Debugging & Profiling
+## Отладка и профилирование
 
-- Toggle **Gizmos** and enable colliders in the Scene view to inspect Rigidbody bounds.
-- Use the **Physics Debugger** (`Window > Analysis > Physics Debugger`) to visualise contacts, sleeping bodies, and collision events.
-- Record with the **Profiler** (`FixedUpdate.Physics`) to catch spikes from excessive rigidbodies or continuous collision on too many objects.
-- `Debug.DrawRay`/`DrawLine` helps trace applied forces or expected movement trajectories.
+- Включите **Gizmos** и отображение коллайдеров в окне Scene для инспекции границ Rigidbody.
+- Используйте **Physics Debugger** (`Window > Analysis > Physics Debugger`) для визуализации контактов, спящих тел и событий столкновений.
+- Записывайте данные с помощью **Profiler** (`FixedUpdate.Physics`), чтобы обнаружить пики от избыточного числа Rigidbody или непрерывного обнаружения столкновений на большом количестве объектов.
+- `Debug.DrawRay`/`DrawLine` помогает отслеживать применённые силы или ожидаемые траектории движения.
 
-## Best Practices
+## Лучшие практики
 
-- Drive physics from `FixedUpdate` and read input in `Update`, then cache values for the next physics step.
-- Avoid moving physics bodies via `transform.position = ...` unless the Rigidbody is kinematic.
-- Cap velocities (`body.velocity = Vector3.ClampMagnitude(...)`) to prevent tunnelling or unstable simulations.
-- Keep Rigidbody counts reasonable; thousands of active bodies per frame can overwhelm the solver.
-- Combine complex structures with joints and parent-child hierarchies carefully; freeze unneeded axes to reduce wobble.
+- Управляйте физикой из `FixedUpdate`, а ввод читайте в `Update`, кешируя значения для следующего физического шага.
+- Избегайте перемещения физических тел через `transform.position = ...`, если Rigidbody не находится в кинематическом режиме.
+- Ограничивайте скорость (`body.velocity = Vector3.ClampMagnitude(...)`) для предотвращения прохождения сквозь объекты и нестабильности симуляции.
+- Держите количество Rigidbody в разумных пределах; тысячи активных тел за кадр могут перегрузить решатель.
+- Аккуратно комбинируйте сложные конструкции с джоинтами и иерархиями родитель–потомок; замораживайте ненужные оси для уменьшения дрожания.
 
-## Common Use Cases
+## Типичные применения
 
-- **Character controllers** – physics-driven movement using forces or velocity changes for grounded characters.
-- **Vehicle simulation** – wheel colliders interacting with Rigidbody chassis to simulate suspension and traction.
-- **Physics props** – crates, debris, dynamic cover reacting to explosions or player pushes.
-- **Pickup & throw systems** – toggle `Is Kinematic` when held, re-enable dynamic mode when released.
-- **Ragdolls** – multiple rigidbodies connected by joints for realistic death animations or physics-driven scenes.
+- **Контроллеры персонажей** — движение на основе физики с использованием сил или изменения скорости для персонажей на земле.
+- **Симуляция транспортных средств** — колёсные коллайдеры, взаимодействующие с корпусом Rigidbody для симуляции подвески и тяги.
+- **Физические объекты** — ящики, обломки, динамические укрытия, реагирующие на взрывы или толчки игрока.
+- **Системы подбора и броска** — переключение `Is Kinematic` при удержании, возврат в динамический режим при отпускании.
+- **Рэгдоллы** — несколько Rigidbody, соединённых джоинтами, для реалистичных анимаций смерти или физических сцен.
 
-Mastering Rigidbody configuration unlocks stable, believable motion across your project. Pair them with well-tuned colliders, forces, and joints to build responsive gameplay systems.
+Освоение настройки Rigidbody открывает возможности для стабильного и правдоподобного движения во всём проекте. Сочетайте их с хорошо настроенными коллайдерами, силами и джоинтами для построения отзывчивых игровых систем.

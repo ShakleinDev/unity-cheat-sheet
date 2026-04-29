@@ -1,4 +1,4 @@
-# Unity Object Pooling - Performance Optimization
+# Unity Object Pooling — Оптимизация производительности
 
 ```csharp
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ public class ObjectPool : MonoBehaviour
     {
         if (!poolDictionary.ContainsKey(tag))
         {
-            Debug.LogWarning("Pool with tag " + tag + " doesn't exist.");
+            Debug.LogWarning("Пул с тегом " + tag + " не существует.");
             return null;
         }
 
@@ -56,7 +56,7 @@ public class ObjectPool : MonoBehaviour
     }
 }
 
-// Usage example
+// Пример использования
 public class GameManager : MonoBehaviour
 {
     public ObjectPool objectPool;

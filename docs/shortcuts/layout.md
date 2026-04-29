@@ -1,7 +1,7 @@
-# Unity Editor Layout Shortcuts
+# Горячие клавиши макета редактора Unity
 
 ```
-CTRL/CMD + 1-5 - Switch between layouts
-SHIFT + Space - Toggle maximize current window
+CTRL/CMD + 1-5 - Переключение между макетами
+SHIFT + Space - Развернуть/свернуть текущее окно
 ```
 

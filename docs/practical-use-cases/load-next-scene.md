@@ -1,15 +1,15 @@
-# Unity Load Scene - Scene Management Guide
+# Unity Load Scene - Руководство по управлению сценами
 
-Advance to the next scene in the build index after completing a level or finishing a cutscene. Guard the call so it only loads when another scene exists to avoid index errors.
+Переход к следующей сцене по индексу сборки после завершения уровня или катсцены. Защитите вызов проверкой, чтобы загрузка происходила только при наличии следующей сцены и не вызывала ошибок индекса.
 
-## Behaviour
+## Поведение
 
-1. Read the active scene’s build index.
-2. Add one to get the next index.
-3. Check against `SceneManager.sceneCountInBuildSettings` to ensure the scene exists.
-4. Load the next scene either synchronously (`LoadScene`) or asynchronously (`LoadSceneAsync`).
+1. Получить индекс сборки активной сцены.
+2. Прибавить единицу для получения следующего индекса.
+3. Сравнить с `SceneManager.sceneCountInBuildSettings`, чтобы убедиться в существовании сцены.
+4. Загрузить следующую сцену синхронно (`LoadScene`) или асинхронно (`LoadSceneAsync`).
 
-## Example
+## Пример
 
 ```csharp
 using UnityEngine;
@@ -17,7 +17,7 @@ using UnityEngine.SceneManagement;
 
 public class LoadNextSceneOnTrigger : MonoBehaviour
 {
-    [SerializeField] private string loadingScreenScene; // optional additive scene for transitions
+    [SerializeField] private string loadingScreenScene; // опциональная аддитивная сцена для переходов
 
     public void LoadNext()
     {
@@ -27,7 +27,7 @@ public class LoadNextSceneOnTrigger : MonoBehaviour
 
         if (nextIndex >= sceneCount)
         {
-            Debug.Log("No more scenes to load.");
+            Debug.Log("Больше нет сцен для загрузки.");
             return;
         }
 
@@ -41,9 +41,9 @@ public class LoadNextSceneOnTrigger : MonoBehaviour
 }
 ```
 
-### Notes
+### Примечания
 
-- Use `LoadSceneAsync` when you want to show loading UI or stream large levels.
-- If you reorder scenes, remember to keep build indices updated via **File → Build Settings**.
-- For looping gameplay (e.g., endless runner), wrap the index manually or return to a menu scene instead of logging.
-- In additive workflows, unload the loading screen or previous scenes once the new scene is ready to avoid duplicates.
+- Используйте `LoadSceneAsync`, если хотите отобразить UI загрузки или стримить большие уровни.
+- При изменении порядка сцен не забывайте обновлять индексы сборки через **File → Build Settings**.
+- Для зацикленного геймплея (например, бесконечный раннер) управляйте индексом вручную или возвращайтесь в сцену меню вместо логирования.
+- В аддитивных сценариях выгружайте сцену загрузки или предыдущие сцены после готовности новой, чтобы избежать дублирования.

@@ -1,8 +1,8 @@
-# Unity UI Button - OnClick Events
+# Unity UI Button — События OnClick
 
 ```csharp
-// Button is used to handle user clicks and interactions.
-// Attach this script to a Button component to respond to button clicks.
+// Button используется для обработки кликов и взаимодействий пользователя.
+// Прикрепите этот скрипт к компоненту Button для реагирования на нажатия кнопки.
 
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ Button myButton = GetComponent<Button>();
 myButton.onClick.AddListener(MyButtonClickHandler);
 
 void MyButtonClickHandler() {
-    Debug.Log("Button Clicked!");
+    Debug.Log("Кнопка нажата!");
 }
 ```
 

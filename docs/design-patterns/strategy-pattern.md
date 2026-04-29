@@ -1,20 +1,20 @@
-# Unity Strategy Pattern - Interchangeable Algorithms
+# Unity — Паттерн «Стратегия» (Взаимозаменяемые алгоритмы)
 
-The Strategy Pattern defines a family of algorithms, encapsulates each one, and makes them interchangeable. This pattern lets the algorithm vary independently from clients that use it.
+Паттерн «Стратегия» определяет семейство алгоритмов, инкапсулирует каждый из них и делает их взаимозаменяемыми. Паттерн позволяет изменять алгоритм независимо от клиентов, которые его используют.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// Strategy interface
+// Интерфейс стратегии
 public interface IStrategy {
     void Execute();
 }
 
-// Example strategy implementation
+// Пример реализации стратегии
 public class AttackStrategy : IStrategy {
-    public void Execute() => Debug.Log("Performing attack!");
+    public void Execute() => Debug.Log("Выполняется атака!");
 }
 
-// Context class that uses the strategy
+// Контекстный класс, использующий стратегию
 public class Character : MonoBehaviour {
     private IStrategy strategy;
 
@@ -28,11 +28,11 @@ public class Character : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Combat System
-A complete example showing how to implement a flexible combat system using the Strategy Pattern. This implementation demonstrates how to:
-- Define different attack strategies (melee, ranged, area)
-- Switch between strategies at runtime
-- Encapsulate combat algorithms
+#### Подробный пример — Боевая система
+Полный пример реализации гибкой боевой системы с использованием паттерна «Стратегия». Реализация демонстрирует:
+- Определение различных стратегий атаки (ближний бой, дальний бой, область)
+- Переключение между стратегиями во время выполнения
+- Инкапсуляцию боевых алгоритмов
 
-👉 [View Full Implementation](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/StrategyPattern/README.md)
+👉 [Посмотреть полную реализацию](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/StrategyPattern/README.md)
 

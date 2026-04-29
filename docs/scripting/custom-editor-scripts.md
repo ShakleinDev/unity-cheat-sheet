@@ -1,7 +1,7 @@
-# Unity Custom Editor Scripts - Inspector Extensions
+# Unity Custom Editor Scripts - Расширения инспектора
 
 ```csharp
-// Custom Editor scripts allow you to create custom inspectors and windows in the Unity Editor.
+// Скрипты Custom Editor позволяют создавать пользовательские инспекторы и окна в редакторе Unity.
 using UnityEditor;
 using UnityEngine;
 

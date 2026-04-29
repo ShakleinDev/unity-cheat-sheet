@@ -1,74 +1,79 @@
-# Unity Euler Angles - Rotation in Degrees
+# Unity Углы Эйлера — Поворот в Градусах
 
-Euler angles describe rotations with three ordered rotations (typically yaw, pitch, roll) expressed in degrees. Unity exposes them heavily in the Inspector, but under the hood it converts every change to quaternions. Treat Euler angles as a user-friendly façade: lean on them for authoring and quick edits, then hand off to quaternions for math-heavy work.
+> **Термины осей вращения** (пришли из авиации/навигации):
+> - **Рыскание** (Yaw) — поворот вокруг вертикальной оси **Y**. Как поворот головы влево/вправо, или разворот машины.
+> - **Тангаж** (Pitch) — поворот вокруг боковой оси **X**. Как кивок головой вперёд/назад, или нос самолёта вверх/вниз.
+> - **Крен** (Roll) — поворот вокруг продольной оси **Z**. Как наклон головы к плечу, или крен самолёта на крыло.
 
-## Where Euler Angles Shine
+Углы Эйлера описывают повороты тремя последовательными вращениями (обычно рыскание, тангаж, крен), выраженными в градусах. Unity активно использует их в Инспекторе, но под капотом каждое изменение преобразуется в кватернионы. Воспринимайте углы Эйлера как удобный интерфейс для пользователя: используйте их при создании контента и быстрых правках, а для математически сложных задач передавайте управление кватернионам.
 
-- Editing rotations in the Inspector or scripting quick adjustments in degrees.
-- Presenting player-facing data such as compass bearings or camera pitch.
-- Constraining motion to specific axes (e.g., yaw-only turrets, clamped camera pitch).
-- Debug logging of orientation values without converting radians to degrees.
+## Где Углы Эйлера Незаменимы
 
-## Reading and Setting Euler Values
+- Редактирование поворотов в Инспекторе или быстрые корректировки в градусах через скрипты.
+- Отображение данных для игрока, например показаний компаса или угла наклона камеры.
+- Ограничение движения по конкретным осям (например, башни с поворотом только по рысканию, зажатый тангаж камеры).
+- Отладочный вывод значений ориентации без перевода радиан в градусы.
+
+## Чтение и Задание Значений Эйлера
 
 ```csharp
-// Grab the world rotation in degrees
-Vector3 worldEuler = transform.eulerAngles; // e.g., (0, 180, 0)
+// Получаем мировой поворот в градусах
+Vector3 worldEuler = transform.eulerAngles; // например, (0, 180, 0)
 
-// Override the yaw while keeping existing pitch/roll
+// Задаём рыскание, сохраняя текущий тангаж и крен
 Vector3 newEuler = worldEuler;
 newEuler.y = desiredHeadingDegrees;
 transform.eulerAngles = newEuler;
 
-// Local rotation in degrees, relative to the parent
+// Локальный поворот в градусах, относительно родителя
 Vector3 localEuler = transform.localEulerAngles;
 transform.localEulerAngles = new Vector3(0f, 45f, 0f);
 ```
 
-Euler angles wrap to the range `[0, 360)` when read from Unity. If you need values centered around zero, normalize them manually with helpers like `Mathf.DeltaAngle`.
+При чтении из Unity углы Эйлера приводятся к диапазону `[0, 360)`. Если нужны значения с центром в нуле, нормализуйте их вручную с помощью вспомогательных функций, например `Mathf.DeltaAngle`.
 
-## Creating Quaternions From Euler Data
+## Создание Кватернионов из Данных Эйлера
 
 ```csharp
-// Construct from components (XYZ order, degrees)
+// Создаём из компонентов (порядок XYZ, градусы)
 Quaternion facing = Quaternion.Euler(0f, 30f, 0f);
 
-// Construct from a vector
+// Создаём из вектора
 Vector3 turretAngles = new Vector3(0f, 90f, 0f);
 Quaternion turretRotation = Quaternion.Euler(turretAngles);
 
-// Mix: set pitch in Euler, keep yaw from a quaternion
+// Смешанный подход: задаём тангаж через Эйлер, рыскание берём из кватерниона
 Quaternion baseRotation = transform.rotation;
 Vector3 mixedEuler = baseRotation.eulerAngles;
 mixedEuler.x = pitchDegrees;
 transform.rotation = Quaternion.Euler(mixedEuler);
 ```
 
-Under the hood Unity uses Z-X-Y (roll, pitch, yaw) order when converting Euler angles to quaternions. You usually do not need to care, but remember that reordering axes changes the final orientation.
+Под капотом Unity использует порядок Z-X-Y (крен, тангаж, рыскание) при преобразовании углов Эйлера в кватернионы. Обычно это не важно, но помните: изменение порядка осей меняет итоговую ориентацию.
 
-## Avoiding the Common Pitfalls
+## Как Избежать Распространённых Ошибок
 
-- **Gimbal lock** – When two axes align, you lose a degree of freedom. This happens when composing Euler rotations directly; generate a quaternion via `Quaternion.Euler` and combine in quaternion space instead.
-- **Interpolation artefacts** – `Vector3.Lerp` on Euler angles causes axis flipping near 180/360°. Prefer `Quaternion.Slerp` or `Quaternion.Lerp` for smooth motion.
-- **Angle wrapping** – Values jump between `0` and `360` instead of smoothly crossing through zero. Use `Mathf.DeltaAngle`, or track your own unbounded angle accumulator.
-- **Inspector edit order** – Rotations apply in Z-X-Y order. Animating multiple axes simultaneously can produce unintuitive curves; preview in the animation window to verify.
+- **Блокировка Гимбала** — Когда две оси совмещаются, теряется одна степень свободы. Это происходит при прямом составлении поворотов Эйлера; создайте кватернион через `Quaternion.Euler` и комбинируйте в пространстве кватернионов.
+- **Артефакты интерполяции** — `Vector3.Lerp` на углах Эйлера вызывает переброс осей вблизи 180/360°. Используйте `Quaternion.Slerp` или `Quaternion.Lerp` для плавного движения.
+- **Перенос углов** — Значения прыгают между `0` и `360` вместо плавного перехода через ноль. Используйте `Mathf.DeltaAngle` или храните собственный неограниченный аккумулятор угла.
+- **Порядок редактирования в Инспекторе** — Повороты применяются в порядке Z-X-Y. Одновременная анимация нескольких осей может давать неожиданные кривые; проверяйте результат в окне анимации.
 
-## Debugging & Utilities
+## Отладка и Утилиты
 
 ```csharp
-// Convert quaternion to Euler for logging
+// Преобразуем кватернион в Эйлер для вывода в лог
 Vector3 display = transform.rotation.eulerAngles;
-Debug.Log($"Heading: {display.y:0}° Pitch: {display.x:0}°");
+Debug.Log($"Курс: {display.y:0}° Тангаж: {display.x:0}°");
 
-// Clamp pitch while keeping yaw free
+// Зажимаем тангаж, сохраняя рыскание свободным
 Vector3 clamped = transform.localEulerAngles;
 clamped.x = Mathf.Clamp(Mathf.DeltaAngle(0f, clamped.x), -45f, 45f);
-clamped.x = (clamped.x + 360f) % 360f; // convert back to 0-360 range
+clamped.x = (clamped.x + 360f) % 360f; // конвертируем обратно в диапазон 0-360
 transform.localEulerAngles = clamped;
 
-// Build a quaternion after editing Euler values
+// Создаём кватернион после редактирования значений Эйлера
 Vector3 offsetEuler = new Vector3(0f, 45f, 0f);
 Quaternion offsetRotation = Quaternion.Euler(offsetEuler) * transform.rotation;
 ```
 
-Use Euler angles where readability and simple axis locks matter, but switch to quaternions for compound rotations, interpolation, and physics-facing logic. Combining both viewpoints lets you keep authoring intuitive while the runtime math stays robust.
+Используйте углы Эйлера там, где важны читаемость и простые блокировки осей, но переключайтесь на кватернионы для составных поворотов, интерполяции и физических расчётов. Совмещение обоих подходов позволяет сохранить удобство создания контента, не жертвуя надёжностью математики во время выполнения.

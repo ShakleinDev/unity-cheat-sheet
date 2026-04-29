@@ -1,16 +1,16 @@
-# Unity Keyboard Input - Legacy Input Manager
+# Unity Ввод с клавиатуры — Устаревший менеджер ввода
 
-> **Note:** This page covers the **Legacy Input Manager**. For Unity 6+ projects, see the [New Input System](new-input-system.md) which is now the standard.
+> **Примечание:** Эта страница описывает **Устаревший менеджер ввода (Legacy Input Manager)**. Для проектов на Unity 6+ рекомендуется использовать [Новую систему ввода](new-input-system.md), которая теперь является стандартной.
 
 ```csharp
-// Returns true during the frame the user starts pressing down the key
+// Возвращает true в кадре, когда пользователь начинает нажимать клавишу
 if (Input.GetKeyDown(KeyCode.Space)) {
-    Debug.Log("Space key was pressed");
+    Debug.Log("Клавиша пробел нажата");
 }
 
-// Jump is also set to space in Input Manager
+// Jump также назначен на пробел в менеджере ввода
 if (Input.GetButtonDown("Jump")) {
-    Debug.Log("Do something");
+    Debug.Log("Выполнить действие");
 }
 ```
 

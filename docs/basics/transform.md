@@ -1,110 +1,110 @@
-# Unity Transform - Position, Rotation and Scale
+# Unity Transform — Позиция, Вращение и Масштаб
 
-Every GameObject in Unity has a `Transform` component. It stores the object’s position, rotation, and scale, but also defines parent-child hierarchies. Mastering transform math is essential for placing objects, moving characters, and aligning UI.
+Каждый GameObject в Unity имеет компонент `Transform`. Он хранит позицию, вращение и масштаб объекта, а также определяет иерархии родитель-потомок. Уверенное владение математикой трансформаций необходимо для размещения объектов, перемещения персонажей и выравнивания UI.
 
-## Position
+## Позиция
 
-- `transform.position` – world-space coordinates.
-- `transform.localPosition` – position relative to the parent transform.
-- `transform.Translate(...)` – moves the transform by a vector, optionally in local or world space.
+- `transform.position` — координаты в мировом пространстве.
+- `transform.localPosition` — позиция относительно родительского трансформа.
+- `transform.Translate(...)` — перемещает трансформ на вектор, опционально в локальном или мировом пространстве.
 
 ```csharp
-// Move 2 units forward in the object's local space.
+// Переместить на 2 единицы вперёд в локальном пространстве объекта.
 transform.Translate(Vector3.forward * 2f);
 
-// Position: Vector3 representing world space coordinates (x, y, z).
+// Позиция: Vector3, представляющий координаты в мировом пространстве (x, y, z).
 transform.position = new Vector3(0f, 2f, 0f);
 
-// Position relative to parent transform.
+// Позиция относительно родительского трансформа.
 transform.localPosition = Vector3.zero;
 
-// Convert from local to world coordinates with TransformPoint.
+// Перевод из локальных координат в мировые с помощью TransformPoint.
 Vector3 worldSlot = transform.TransformPoint(new Vector3(0f, 1f, 0f));
 ```
 
-Use `TransformPoint` / `InverseTransformPoint` when working with offsets relative to parents or sockets (e.g., weapon attachments).
+Используйте `TransformPoint` / `InverseTransformPoint` при работе со смещениями относительно родителей или сокетов (например, крепления оружия).
 
-## Rotation
+## Вращение
 
-Unity exposes rotations as both Euler angles (degrees) and quaternions. Prefer quaternions when interpolating or composing rotations to avoid gimbal lock.
+Unity предоставляет вращения как в виде углов Эйлера (в градусах), так и кватернионов. Предпочитайте кватернионы при интерполяции или совмещении вращений во избежание шарнирного замка (gimbal lock).
 
-- `transform.rotation` – world-space quaternion.
-- `transform.localRotation` – rotation relative to parent.
-- `transform.eulerAngles` – short-term access to world Euler angles; changing it recalculates the quaternion.
-- `transform.LookAt(target)` – convenience to orient forward vector toward a point.
+- `transform.rotation` — кватернион в мировом пространстве.
+- `transform.localRotation` — вращение относительно родителя.
+- `transform.eulerAngles` — быстрый доступ к мировым углам Эйлера; при изменении пересчитывает кватернион.
+- `transform.LookAt(target)` — удобный способ направить вектор forward к заданной точке.
 
 ```csharp
-// Rotate 90 degrees around Y in world space.
+// Повернуть на 90 градусов вокруг оси Y в мировом пространстве.
 transform.rotation = Quaternion.Euler(0f, 90f, 0f);
 
-// Smoothly rotate toward target.
+// Плавно повернуть в сторону цели.
 Quaternion targetRotation = Quaternion.LookRotation(target.position - transform.position);
 transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
 
-// Rotate 45 degrees per second around local X.
+// Вращать на 45 градусов в секунду вокруг локальной оси X.
 transform.Rotate(Vector3.right * 45f * Time.deltaTime, Space.Self);
 ```
 
-## Scale
+## Масштаб
 
-- `transform.localScale` – scale relative to parent; default `(1,1,1)`.
-- Avoid negative or zero scale on gameplay objects; it can flip normals and break physics.
-- When animating scale or using child hierarchies, consider normalizing parent scale to `(1,1,1)` and applying adjustments on children.
+- `transform.localScale` — масштаб относительно родителя; по умолчанию `(1,1,1)`.
+- Избегайте отрицательного или нулевого масштаба на игровых объектах: это может перевернуть нормали и нарушить физику.
+- При анимации масштаба или использовании дочерних иерархий рассмотрите нормализацию масштаба родителя до `(1,1,1)` и применение изменений на дочерних объектах.
 
 ```csharp
-// Double the size uniformly.
+// Увеличить размер вдвое равномерно.
 transform.localScale = Vector3.one * 2f;
 
-// Pulse scale over time.
+// Пульсация масштаба со временем.
 float pulse = 1f + Mathf.Sin(Time.time) * 0.2f;
 transform.localScale = new Vector3(pulse, pulse, pulse);
 ```
 
-## Hierarchies & Parenting
+## Иерархии и Родительство
 
-- `transform.SetParent(newParent, worldPositionStays)` – reparent while optionally preserving world transform.
-- Access children via `transform.GetChild(index)` or iterate with `foreach (Transform child in transform)`.
-- Be careful when scaling parents; child transforms inherit scale/rotation.
+- `transform.SetParent(newParent, worldPositionStays)` — смена родителя с опциональным сохранением мирового трансформа.
+- Доступ к дочерним объектам через `transform.GetChild(index)` или перебором `foreach (Transform child in transform)`.
+- Будьте осторожны при масштабировании родителей: дочерние трансформы наследуют масштаб и вращение.
 
 ```csharp
-// Attach pickup to hand but keep current world position.
+// Прикрепить подбираемый объект к руке, сохраняя текущую мировую позицию.
 pickupTransform.SetParent(handTransform, worldPositionStays: true);
 
-// Detach from parent and reset local transform.
+// Отсоединить от родителя и сбросить локальный трансформ.
 transform.SetParent(null);
 transform.localPosition = Vector3.zero;
 transform.localRotation = Quaternion.identity;
 transform.localScale = Vector3.one;
 ```
 
-## Space Conversions
+## Преобразования Пространства
 
-- `TransformDirection` – convert local direction vector to world space without affecting magnitude.
-- `InverseTransformDirection` – world → local direction.
-- `TransformVector` / `InverseTransformVector` – similar but include scale.
+- `TransformDirection` — преобразует локальный вектор направления в мировое пространство без изменения его длины.
+- `InverseTransformDirection` — мировое → локальное направление.
+- `TransformVector` / `InverseTransformVector` — аналогично, но с учётом масштаба.
 
 ```csharp
-// Cast a ray straight ahead in world space using local forward.
+// Выпустить луч прямо вперёд в мировом пространстве, используя локальный forward.
 Vector3 worldForward = transform.TransformDirection(Vector3.forward);
 Physics.Raycast(transform.position, worldForward, out var hit, 10f);
 
-// Align UI element to camera-forward projected on the horizontal plane.
+// Выровнять UI-элемент по направлению камеры, спроецированному на горизонтальную плоскость.
 Vector3 cameraForward = cameraTransform.forward;
 Vector3 planarForward = Vector3.ProjectOnPlane(cameraForward, Vector3.up).normalized;
 transform.rotation = Quaternion.LookRotation(planarForward);
 ```
 
-## Inspecting Transforms in the Editor
+## Просмотр Трансформов в Редакторе
 
-- Toggle **local/global gizmo** (hotkey `X` in newer Unity versions or the toolbar icon) to move in either coordinate space.
-- Use the **Pivot/Center** toggle to adjust the gizmo pivot when multiple objects are selected.
-- For precision, type numeric values directly into the inspector. Reset to defaults via the gear icon > `Reset`.
+- Переключайте **локальный/глобальный гизмо** (горячая клавиша `X` в новых версиях Unity или иконка на панели инструментов) для перемещения в нужной системе координат.
+- Используйте переключатель **Pivot/Center** для настройки точки опоры гизмо при выборе нескольких объектов.
+- Для точности вводите числовые значения непосредственно в инспекторе. Сброс до значений по умолчанию — через иконку шестерёнки > `Reset`.
 
-## Best Practices
+## Рекомендации
 
-- Keep your root GameObject scale at `(1,1,1)` and apply visual scaling to child meshes.
-- Avoid setting `transform.parent` directly; prefer `SetParent` with `worldPositionStays` to control how transforms change.
-- Cache `transform` in hot loops? Not needed—Unity already caches it internally, but store other component references (`transform.parent`, child lookups) if accessed frequently.
-- When driving objects with physics, modify the `Rigidbody` using `MovePosition` / `MoveRotation` instead of changing the transform directly.
+- Сохраняйте масштаб корневого GameObject равным `(1,1,1)`, применяя визуальное масштабирование к дочерним мешам.
+- Избегайте прямого присваивания `transform.parent`; предпочитайте `SetParent` с `worldPositionStays` для контроля над изменением трансформов.
+- Кэшировать `transform` в горячих циклах? Не нужно — Unity уже кэширует его внутри, однако сохраняйте ссылки на другие компоненты (`transform.parent`, поиск дочерних объектов), если они используются часто.
+- При управлении объектами через физику изменяйте `Rigidbody` с помощью `MovePosition` / `MoveRotation`, а не трансформ напрямую.
 
-Mastering transforms unlocks accurate positioning, smooth rotations, and clean hierarchies across your project. Combine these tools with math helpers (`Vector3`, `Quaternion`) to build precise gameplay behaviour.
+Уверенное владение трансформами открывает возможности для точного позиционирования, плавного вращения и чистых иерархий во всём проекте. Сочетайте эти инструменты с математическими вспомогательными классами (`Vector3`, `Quaternion`) для построения точной игровой механики.

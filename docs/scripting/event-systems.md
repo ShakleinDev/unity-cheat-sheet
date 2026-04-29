@@ -1,26 +1,26 @@
-# Unity Events - UnityEvent and C# Delegates
+# Unity Events — UnityEvent и делегаты C#
 
-Unity provides several ways to handle events in your games. Here are the main approaches:
+Unity предоставляет несколько способов обработки событий в играх. Ниже представлены основные подходы:
 
 #### UnityEvents
-UnityEvents are serializable events that can be configured in the Inspector and used in scripts.
+UnityEvents — это сериализуемые события, которые можно настраивать в инспекторе и использовать в скриптах.
 
 ```csharp
 using UnityEngine;
 using UnityEngine.Events;
 
-// Basic UnityEvent
+// Базовый UnityEvent
 public class BasicEventExample : MonoBehaviour {
-    // This will show up in the inspector
+    // Отображается в инспекторе
     public UnityEvent onGameStart;
     
     void Start() {
-        // Invoke the event
+        // Вызов события
         onGameStart?.Invoke();
     }
 }
 
-// UnityEvent with parameters
+// UnityEvent с параметрами
 [System.Serializable]
 public class ScoreEvent : UnityEvent<int> { }
 
@@ -35,24 +35,23 @@ public class ParameterizedEventExample : MonoBehaviour {
 }
 ```
 
-#### C# Events and Delegates
-Traditional C# events provide a more code-based approach to event handling.
+#### События и делегаты C#
+Стандартные события C# предоставляют более программный подход к обработке событий.
 
-
-Delegates are type-safe function pointers, and events are a way to broadcast messages to multiple listeners.
+Делегаты — это типобезопасные указатели на функции, а события — способ рассылать сообщения сразу нескольким подписчикам.
 
 ```csharp
 public class GameEvents : MonoBehaviour {
-    // Delegate definition
+    // Определение делегатов
     public delegate void GameStateHandler();
     public delegate void ScoreHandler(int newScore);
 
-    // Event declaration
+    // Объявление событий
     public static event GameStateHandler OnGameStart;
     public static event GameStateHandler OnGameOver;
     public static event ScoreHandler OnScoreChanged;
 
-    // Methods to trigger events
+    // Методы для вызова событий
     public static void TriggerGameStart() {
         OnGameStart?.Invoke();
     }
@@ -66,26 +65,26 @@ public class GameEvents : MonoBehaviour {
     }
 }
 
-// Example usage in another class
+// Пример использования в другом классе
 public class Player : MonoBehaviour {
     void OnEnable() {
-        // Subscribe to events
+        // Подписка на события
         GameEvents.OnGameStart += HandleGameStart;
         GameEvents.OnGameOver += HandleGameOver;
     }
 
     void OnDisable() {
-        // Unsubscribe from events
+        // Отписка от событий
         GameEvents.OnGameStart -= HandleGameStart;
         GameEvents.OnGameOver -= HandleGameOver;
     }
 
     private void HandleGameStart() {
-        Debug.Log("Game Started!");
+        Debug.Log("Игра началась!");
     }
 
     private void HandleGameOver() {
-        Debug.Log("Game Over!");
+        Debug.Log("Игра окончена!");
     }
 }
 ```

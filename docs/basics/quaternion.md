@@ -1,88 +1,88 @@
-# Unity Quaternion - 3D Rotation Explained
+# Unity Quaternion — объяснение 3D-вращения
 
-Quaternions represent 3D rotations without the gimbal lock issues of Euler angles. Unity stores every `Transform` rotation as a quaternion, so understanding the common factory methods and helpers lets you aim objects, blend motion, and compose complex orientations safely.
+Кватернионы представляют трёхмерные вращения без проблемы шарнирного замка (gimbal lock), характерной для углов Эйлера. Unity хранит каждое вращение `Transform` в виде кватерниона, поэтому понимание основных фабричных методов и вспомогательных функций позволяет безопасно направлять объекты, плавно перемещать их и составлять сложные ориентации.
 
-## When to Reach for Quaternions
+## Когда использовать кватернионы
 
-- Combine multiple rotations without accumulating numerical drift.
-- Smoothly turn characters, cameras, and projectiles toward targets.
-- Blend animation poses or camera rigs while keeping motion on the shortest arc.
-- Rotate vectors (e.g., forward, up) into new orientations without touching Euler angles.
+- Объединение нескольких вращений без накопления численного дрейфа.
+- Плавный поворот персонажей, камер и снарядов в сторону цели.
+- Смешивание поз анимации или rig-ов камеры с сохранением движения по кратчайшей дуге.
+- Поворот векторов (например, forward, up) в новую ориентацию без использования углов Эйлера.
 
-## Creating Rotations
+## Создание вращений
 
 ```csharp
-// Identity (no rotation)
+// Единичный кватернион (без вращения)
 Quaternion idle = Quaternion.identity;
 
-// From Euler angles in degrees (yaw, pitch, roll)
+// Из углов Эйлера в градусах (рыскание, тангаж, крен)
 Quaternion yaw30 = Quaternion.Euler(0f, 30f, 0f);
 
-// Axis-angle: rotate 45 degrees around an arbitrary axis
+// Ось-угол: поворот на 45 градусов вокруг произвольной оси
 Quaternion tilt = Quaternion.AngleAxis(45f, new Vector3(1f, 0f, 1f).normalized);
 
-// Aim the forward vector toward a direction (optionally supply the up axis)
+// Направить вектор forward в нужную сторону (можно указать ось up)
 Vector3 targetDirection = enemy.position - transform.position;
 Quaternion aim = Quaternion.LookRotation(targetDirection, Vector3.up);
 ```
 
-`Quaternion.Euler` expects degrees, matching the Unity inspector. Use axis-angle or `LookRotation` when you already have meaningful directions in world/local space.
+`Quaternion.Euler` принимает градусы, соответствующие значениям в инспекторе Unity. Используйте ось-угол или `LookRotation`, когда у вас уже есть осмысленные направления в мировом или локальном пространстве.
 
-## Composing and Applying Rotations
+## Составление и применение вращений
 
 ```csharp
-// Order matters: result applies "tilt" first, then "turn"
+// Порядок важен: сначала применяется "tilt", затем "turn"
 Quaternion turn = Quaternion.Euler(0f, 90f, 0f);
 Quaternion composed = turn * tilt;
 
-// Apply an incremental spin each frame
+// Применить инкрементное вращение на каждом кадре
 transform.rotation = transform.rotation * Quaternion.Euler(0f, spinSpeed * Time.deltaTime, 0f);
 
-// Rotate a direction vector by a quaternion
+// Повернуть вектор направления с помощью кватерниона
 Vector3 worldForward = composed * Vector3.forward;
 ```
 
-Quaternion multiplication is not commutative; swapping operands changes the order the rotations are applied.
+Умножение кватернионов некоммутативно: перестановка операндов изменяет порядок применения вращений.
 
-## Interpolating and Limiting
+## Интерполяция и ограничение
 
 ```csharp
-// Smoothly turn toward a target rotation over time
+// Плавно поворачиваться к целевому вращению со временем
 Quaternion desired = Quaternion.LookRotation(targetDirection);
 transform.rotation = Quaternion.Slerp(transform.rotation, desired, turnSpeed * Time.deltaTime);
 
-// Clamp rotation speed in degrees per second
+// Ограничить скорость поворота в градусах в секунду
 transform.rotation = Quaternion.RotateTowards(transform.rotation, desired, maxDegreesPerSecond * Time.deltaTime);
 
-// Shortest angle between two orientations
+// Кратчайший угол между двумя ориентациями
 double delta = Quaternion.Angle(transform.rotation, desired);
 ```
 
-Use `Slerp` for consistent angular velocity, `Lerp` for cheaper but non-constant motion, and `RotateTowards` to enforce hard turn-rate caps.
+Используйте `Slerp` для равномерной угловой скорости, `Lerp` для более дешёвого, но неравномерного движения, а `RotateTowards` — для жёсткого ограничения скорости поворота.
 
-## Inspecting and Converting
+## Анализ и преобразование
 
 ```csharp
-// Read or assign world Euler angles (Unity converts under the hood)
+// Чтение или присвоение мировых углов Эйлера (Unity конвертирует автоматически)
 Vector3 asEuler = transform.rotation.eulerAngles;
 transform.eulerAngles = new Vector3(0f, 180f, 0f);
 
-// Extract axis-angle representation
+// Извлечь представление ось-угол
 transform.rotation.ToAngleAxis(out float angle, out Vector3 axis);
 
-// Invert or normalize to clean up drift
+// Инвертировать или нормализовать для устранения дрейфа
 Quaternion inverse = Quaternion.Inverse(transform.rotation);
 Quaternion normalized = Quaternion.Normalize(transform.rotation);
 ```
 
-Remember that the underlying quaternion values (`x`, `y`, `z`, `w`) are rarely edited directly—convert to a representation that matches the task, make the change, then convert back.
+Помните, что базовые значения кватерниона (`x`, `y`, `z`, `w`) редко редактируются напрямую — преобразуйте в удобное представление, внесите изменение, затем конвертируйте обратно.
 
-## Best Practices & Debugging
+## Рекомендации и отладка
 
-- Keep quaternions normalized; repeated floating-point operations can introduce drift. Re-normalize occasionally when composing many rotations.
-- Prefer quaternion math when blending or accumulating rotations; only fall back to Euler angles for UI and inspector-friendly tweaks.
-- Visualize directions with `Debug.DrawRay(transform.position, transform.rotation * Vector3.forward);`.
-- When debugging in the inspector, right-click the rotation label and choose **Copy** to grab Euler values or **Reset** to `Quaternion.identity`.
-- Cache reusable orientations (e.g., `Quaternion.LookRotation(Vector3.forward)`) rather than recalculating every frame in hot paths.
+- Держите кватернионы нормализованными: многократные операции с плавающей точкой могут вызывать дрейф. Периодически повторно нормализуйте при составлении большого числа вращений.
+- Предпочитайте математику кватернионов при смешивании и накоплении вращений; прибегайте к углам Эйлера только для элементов UI и удобного отображения в инспекторе.
+- Визуализируйте направления с помощью `Debug.DrawRay(transform.position, transform.rotation * Vector3.forward);`.
+- При отладке в инспекторе щёлкните правой кнопкой мыши по метке вращения и выберите **Copy**, чтобы скопировать значения Эйлера, или **Reset** для сброса к `Quaternion.identity`.
+- Кэшируйте повторно используемые ориентации (например, `Quaternion.LookRotation(Vector3.forward)`), а не пересчитывайте их каждый кадр в горячих путях исполнения.
 
-Learning the core factory methods and helpers makes quaternions approachable—lean on them instead of writing custom math, and you’ll avoid the pitfalls that Euler-based workflows encounter.
+Изучение основных фабричных методов и вспомогательных функций делает работу с кватернионами понятной — опирайтесь на них вместо написания собственной математики, и вы избежите ловушек, с которыми сталкиваются подходы на основе углов Эйлера.

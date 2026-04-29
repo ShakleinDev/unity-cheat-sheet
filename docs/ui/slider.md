@@ -1,8 +1,8 @@
-# Unity UI Slider - Value Change Events
+# Unity UI Slider — События изменения значения
 
 ```csharp
-// Slider is used for selecting a value within a range.
-// Attach this script to a Slider component to respond to value changes.
+// Slider используется для выбора значения в заданном диапазоне.
+// Прикрепите этот скрипт к компоненту Slider для реагирования на изменения значения.
 
 using UnityEngine.UI;
 
@@ -10,7 +10,7 @@ Slider mySlider = GetComponent<Slider>();
 mySlider.onValueChanged.AddListener(MySliderValueChangedHandler);
 
 void MySliderValueChangedHandler(float value) {
-    Debug.Log("Slider Value: " + value);
+    Debug.Log("Значение слайдера: " + value);
 }
 ```
 

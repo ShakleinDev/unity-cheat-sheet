@@ -1,136 +1,136 @@
-# Unity New Input System - Complete Guide
+# Unity Новая система ввода — Полное руководство
 
-The Input System package provides a modern, flexible way to handle player input across all platforms. It is the **standard for Unity 6** and recommended for all new projects.
+Пакет Input System предоставляет современный и гибкий способ обработки пользовательского ввода на всех платформах. Это **стандарт для Unity 6** и рекомендуется для всех новых проектов.
 
-## Legacy vs New Input System
+## Устаревший и новый менеджер ввода
 
-| Feature | Legacy (`UnityEngine.Input`) | New (`UnityEngine.InputSystem`) |
+| Возможность | Устаревший (`UnityEngine.Input`) | Новый (`UnityEngine.InputSystem`) |
 |---------|------------------------------|----------------------------------|
-| Multi-device support | Limited | Excellent |
-| Runtime rebinding | Manual implementation | Built-in support |
-| Action-based input | No | Yes |
-| Type safety | String-based | Generated C# classes |
-| Unity 6 default | No | Yes |
-| Local multiplayer | Complex | Built-in PlayerInputManager |
+| Поддержка нескольких устройств | Ограниченная | Отличная |
+| Переназначение клавиш во время выполнения | Ручная реализация | Встроенная поддержка |
+| Ввод на основе действий | Нет | Да |
+| Типобезопасность | На основе строк | Генерируемые C# классы |
+| По умолчанию в Unity 6 | Нет | Да |
+| Локальный мультиплеер | Сложная реализация | Встроенный PlayerInputManager |
 
-## Installation & Setup
+## Установка и настройка
 
-### Unity 6 Projects
-The Input System is installed by default. Verify in **Edit > Project Settings > Player > Active Input Handling** is set to **Input System Package (New)** or **Both**.
+### Проекты на Unity 6
+Input System устанавливается по умолчанию. Проверьте в **Edit > Project Settings > Player > Active Input Handling**, что выбрано **Input System Package (New)** или **Both**.
 
-### Earlier Unity Versions
+### Более ранние версии Unity
 ```
 Window > Package Manager > Unity Registry > Input System > Install
 ```
 
-After installation, Unity will prompt you to enable the new input backend. Click **Yes** and Unity will restart.
+После установки Unity предложит включить новый бэкенд ввода. Нажмите **Yes**, и Unity перезапустится.
 
-### Required Using Statement
+### Необходимый using
 ```csharp
 using UnityEngine.InputSystem;
 ```
 
 ---
 
-## Direct Device Access
+## Прямой доступ к устройствам
 
-Direct device access lets you read input immediately without setting up Input Actions. Good for prototyping or simple projects.
+Прямой доступ к устройствам позволяет считывать ввод немедленно, без настройки действий (Input Actions). Подходит для прототипирования или простых проектов.
 
-### Keyboard
+### Клавиатура
 
 ```csharp
-// Check if key is currently held down
+// Проверить, удерживается ли клавиша прямо сейчас
 if (Keyboard.current.wKey.isPressed)
 {
-    // W key is held
+    // Клавиша W удерживается
 }
 
-// Check if key was pressed this frame
+// Проверить, была ли клавиша нажата в этом кадре
 if (Keyboard.current.spaceKey.wasPressedThisFrame)
 {
-    // Space just pressed
+    // Пробел только что нажат
 }
 
-// Check if key was released this frame
+// Проверить, была ли клавиша отпущена в этом кадре
 if (Keyboard.current.escapeKey.wasReleasedThisFrame)
 {
-    // Escape just released
+    // Escape только что отпущен
 }
 
-// Check if any key is pressed
+// Проверить, нажата ли хоть какая-нибудь клавиша
 if (Keyboard.current.anyKey.isPressed)
 {
-    // Some key is pressed
+    // Какая-то клавиша нажата
 }
 ```
 
-### Mouse
+### Мышь
 
 ```csharp
-// Mouse position (screen coordinates)
+// Позиция мыши (в экранных координатах)
 Vector2 mousePos = Mouse.current.position.ReadValue();
 
-// Mouse movement since last frame
+// Смещение мыши с последнего кадра
 Vector2 mouseDelta = Mouse.current.delta.ReadValue();
 
-// Scroll wheel (y = vertical scroll)
+// Колесо прокрутки (y = вертикальная прокрутка)
 Vector2 scroll = Mouse.current.scroll.ReadValue();
 float scrollY = scroll.y;
 
-// Mouse buttons
+// Кнопки мыши
 if (Mouse.current.leftButton.isPressed) { }
 if (Mouse.current.leftButton.wasPressedThisFrame) { }
 if (Mouse.current.rightButton.wasPressedThisFrame) { }
 if (Mouse.current.middleButton.isPressed) { }
 
-// Side buttons
+// Боковые кнопки
 if (Mouse.current.forwardButton.wasPressedThisFrame) { }
 if (Mouse.current.backButton.wasPressedThisFrame) { }
 ```
 
-### Gamepad
+### Геймпад
 
 ```csharp
-// Always check if gamepad exists
+// Всегда проверяйте, подключён ли геймпад
 if (Gamepad.current == null) return;
 
-// Left stick (Vector2, -1 to 1)
+// Левый стик (Vector2, от -1 до 1)
 Vector2 leftStick = Gamepad.current.leftStick.ReadValue();
 
-// Right stick
+// Правый стик
 Vector2 rightStick = Gamepad.current.rightStick.ReadValue();
 
-// Individual stick axes
+// Отдельные оси стика
 float leftX = Gamepad.current.leftStick.x.ReadValue();
 float leftY = Gamepad.current.leftStick.y.ReadValue();
 
-// Triggers (0 to 1)
+// Триггеры (от 0 до 1)
 float leftTrigger = Gamepad.current.leftTrigger.ReadValue();
 float rightTrigger = Gamepad.current.rightTrigger.ReadValue();
 
-// D-pad as Vector2
+// Крестовина (D-pad) как Vector2
 Vector2 dpad = Gamepad.current.dpad.ReadValue();
 
-// Face buttons (A/B/X/Y on Xbox, Cross/Circle/Square/Triangle on PlayStation)
-if (Gamepad.current.buttonSouth.wasPressedThisFrame) { } // A / Cross
-if (Gamepad.current.buttonEast.wasPressedThisFrame) { }  // B / Circle
-if (Gamepad.current.buttonWest.wasPressedThisFrame) { }  // X / Square
-if (Gamepad.current.buttonNorth.wasPressedThisFrame) { } // Y / Triangle
+// Лицевые кнопки (A/B/X/Y на Xbox, Крест/Круг/Квадрат/Треугольник на PlayStation)
+if (Gamepad.current.buttonSouth.wasPressedThisFrame) { } // A / Крест
+if (Gamepad.current.buttonEast.wasPressedThisFrame) { }  // B / Круг
+if (Gamepad.current.buttonWest.wasPressedThisFrame) { }  // X / Квадрат
+if (Gamepad.current.buttonNorth.wasPressedThisFrame) { } // Y / Треугольник
 
-// Shoulder buttons
+// Шифт-кнопки
 if (Gamepad.current.leftShoulder.wasPressedThisFrame) { }  // LB / L1
 if (Gamepad.current.rightShoulder.wasPressedThisFrame) { } // RB / R1
 
-// Stick clicks
+// Нажатие стиков
 if (Gamepad.current.leftStickButton.wasPressedThisFrame) { }  // L3
 if (Gamepad.current.rightStickButton.wasPressedThisFrame) { } // R3
 
-// Menu buttons
+// Кнопки меню
 if (Gamepad.current.startButton.wasPressedThisFrame) { }
 if (Gamepad.current.selectButton.wasPressedThisFrame) { }
 ```
 
-### Gamepad Movement Example
+### Пример движения с геймпадом
 
 ```csharp
 public class GamepadMovement : MonoBehaviour
@@ -142,23 +142,23 @@ public class GamepadMovement : MonoBehaviour
     {
         if (Gamepad.current == null) return;
 
-        // Movement with left stick
+        // Движение с помощью левого стика
         Vector2 move = Gamepad.current.leftStick.ReadValue();
         transform.Translate(move.x * moveSpeed * Time.deltaTime, 0, move.y * moveSpeed * Time.deltaTime);
 
-        // Rotation with right stick
+        // Поворот с помощью правого стика
         Vector2 look = Gamepad.current.rightStick.ReadValue();
         transform.Rotate(0, look.x * turnSpeed * Time.deltaTime, 0);
     }
 }
 ```
 
-### Touch (Touchscreen)
+### Сенсорный экран
 
 ```csharp
 if (Touchscreen.current == null) return;
 
-// Primary touch
+// Основное касание
 var touch = Touchscreen.current.primaryTouch;
 
 if (touch.press.isPressed)
@@ -167,7 +167,7 @@ if (touch.press.isPressed)
     Vector2 delta = touch.delta.ReadValue();
 }
 
-// All touches
+// Все касания
 foreach (var t in Touchscreen.current.touches)
 {
     if (t.press.isPressed)
@@ -179,92 +179,92 @@ foreach (var t in Touchscreen.current.touches)
 
 ---
 
-## Input Actions
+## Действия ввода (Input Actions)
 
-Input Actions provide a layer of abstraction between your code and physical inputs. This is the **recommended approach** for production games.
+Действия ввода создают уровень абстракции между вашим кодом и физическими устройствами ввода. Это **рекомендуемый подход** для готовых игр.
 
-### Benefits
-- Same code works for keyboard, gamepad, touch
-- Players can rebind controls at runtime
-- Easier to manage complex input schemes
-- Type-safe with generated C# classes
+### Преимущества
+- Один код работает для клавиатуры, геймпада и сенсорного экрана
+- Игроки могут переназначать управление во время выполнения
+- Легче управлять сложными схемами управления
+- Типобезопасность с помощью генерируемых C# классов
 
-### Creating Input Action Assets
+### Создание ассета Input Actions
 
-1. **Create Asset**: Right-click in Project > Create > Input Actions
-2. **Open Editor**: Double-click the `.inputactions` file
-3. **Create Action Map**: e.g., "Gameplay", "UI", "Vehicle"
-4. **Add Actions**: e.g., "Move", "Jump", "Fire"
-5. **Add Bindings**: Map to keyboard, mouse, gamepad
-6. **Generate C# Class**: Check "Generate C# Class" in the asset inspector
-7. **Apply**: Click "Apply" to save changes
+1. **Создать ассет**: Правой кнопкой мыши в Project > Create > Input Actions
+2. **Открыть редактор**: Двойной щелчок по файлу `.inputactions`
+3. **Создать Action Map**: например, "Gameplay", "UI", "Vehicle"
+4. **Добавить действия**: например, "Move", "Jump", "Fire"
+5. **Добавить привязки**: назначить клавиатуру, мышь, геймпад
+6. **Генерация C# класса**: отметьте "Generate C# Class" в инспекторе ассета
+7. **Применить**: нажмите "Apply" для сохранения изменений
 
-### Action Types
+### Типы действий
 
-| Type | Use Case | Example |
+| Тип | Применение | Пример |
 |------|----------|---------|
-| **Value** | Continuous input | Movement stick, mouse position |
-| **Button** | Discrete press/release | Jump, fire, interact |
-| **Pass-Through** | All input without processing | Raw device input |
+| **Value** | Непрерывный ввод | Стик движения, позиция мыши |
+| **Button** | Дискретное нажатие/отпускание | Прыжок, выстрел, взаимодействие |
+| **Pass-Through** | Весь ввод без обработки | Сырой ввод с устройства |
 
-### Composite Bindings
+### Составные привязки
 
-Combine multiple inputs into one value (e.g., WASD to Vector2):
+Объединение нескольких входов в одно значение (например, WASD → Vector2):
 
-1. Add Action with **Value** type and **Vector2** control type
-2. Add binding > **2D Vector Composite**
-3. Set Up=W, Down=S, Left=A, Right=D
-4. Add another binding for **Gamepad Left Stick**
+1. Добавьте действие типа **Value** с типом управления **Vector2**
+2. Добавьте привязку > **2D Vector Composite**
+3. Назначьте: Up=W, Down=S, Left=A, Right=D
+4. Добавьте ещё одну привязку для **Gamepad Left Stick**
 
-Now one action handles both WASD and gamepad!
+Теперь одно действие обрабатывает и WASD, и геймпад!
 
 ---
 
-## Using Input Actions in Code
+## Использование Input Actions в коде
 
-### Method 1: PlayerInput Component (Designer-Friendly)
+### Метод 1: Компонент PlayerInput (для дизайнеров)
 
-The simplest approach - no code required for basic setup.
+Самый простой подход — для базовой настройки код не нужен.
 
-1. Add **PlayerInput** component to your GameObject
-2. Assign your Input Action Asset
-3. Set **Behavior** to "Send Messages" or "Invoke Unity Events"
-4. Implement callback methods:
+1. Добавьте компонент **PlayerInput** на ваш GameObject
+2. Назначьте ассет Input Actions
+3. Установите **Behavior** на "Send Messages" или "Invoke Unity Events"
+4. Реализуйте методы обратного вызова:
 
 ```csharp
 public class PlayerController : MonoBehaviour
 {
-    // Called automatically by PlayerInput component
+    // Вызывается автоматически компонентом PlayerInput
     void OnMove(InputValue value)
     {
         Vector2 movement = value.Get<Vector2>();
-        // Use movement...
+        // Используем movement...
     }
 
     void OnJump(InputValue value)
     {
-        // Jump!
+        // Прыжок!
     }
 
     void OnFire(InputValue value)
     {
-        // Fire!
+        // Выстрел!
     }
 }
 ```
 
-### Method 2: C# Generated Class (Type-Safe)
+### Метод 2: Генерируемый C# класс (типобезопасный)
 
-Best for larger projects. Provides IntelliSense and compile-time checks.
+Лучший вариант для крупных проектов. Предоставляет IntelliSense и проверку на этапе компиляции.
 
-1. Select your `.inputactions` asset
-2. In Inspector, check **Generate C# Class**
-3. Click **Apply**
+1. Выберите ваш ассет `.inputactions`
+2. В инспекторе отметьте **Generate C# Class**
+3. Нажмите **Apply**
 
 ```csharp
 public class PlayerController : MonoBehaviour
 {
-    private MyGameControls controls; // Auto-generated class name
+    private MyGameControls controls; // Имя автогенерируемого класса
 
     void Awake()
     {
@@ -275,14 +275,14 @@ public class PlayerController : MonoBehaviour
     {
         controls.Gameplay.Enable();
         
-        // Subscribe to events
+        // Подписаться на события
         controls.Gameplay.Jump.performed += OnJump;
         controls.Gameplay.Fire.performed += OnFire;
     }
 
     void OnDisable()
     {
-        // Always unsubscribe!
+        // Всегда отписывайтесь!
         controls.Gameplay.Jump.performed -= OnJump;
         controls.Gameplay.Fire.performed -= OnFire;
         
@@ -291,26 +291,26 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Polling for continuous input
+        // Опрос для непрерывного ввода
         Vector2 move = controls.Gameplay.Move.ReadValue<Vector2>();
         transform.Translate(move.x * Time.deltaTime, 0, move.y * Time.deltaTime);
     }
 
     void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump!");
+        Debug.Log("Прыжок!");
     }
 
     void OnFire(InputAction.CallbackContext context)
     {
-        Debug.Log("Fire!");
+        Debug.Log("Выстрел!");
     }
 }
 ```
 
-### Method 3: InputActionReference (Editor-Friendly)
+### Метод 3: InputActionReference (удобен для редактора)
 
-Reference actions directly in the Inspector without generating classes.
+Ссылка на действия прямо в инспекторе без генерации классов.
 
 ```csharp
 public class PlayerController : MonoBehaviour
@@ -340,68 +340,68 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         Vector2 move = moveAction.action.ReadValue<Vector2>();
-        // Use move...
+        // Используем move...
     }
 
     void OnJump(InputAction.CallbackContext context)
     {
-        Debug.Log("Jump!");
+        Debug.Log("Прыжок!");
     }
 }
 ```
 
 ---
 
-## Callbacks vs Polling
+## Коллбэки против опроса
 
-### Callback-Based (Event-Driven)
+### На основе коллбэков (событийная модель)
 
-Best for: Discrete actions like jump, fire, interact.
+Лучше для: дискретных действий — прыжок, выстрел, взаимодействие.
 
 ```csharp
 void OnEnable()
 {
     jumpAction.performed += OnJump;
-    jumpAction.started += OnJumpStart;    // Button pressed
-    jumpAction.canceled += OnJumpCancel;  // Button released
+    jumpAction.started += OnJumpStart;    // Кнопка нажата
+    jumpAction.canceled += OnJumpCancel;  // Кнопка отпущена
 }
 
 void OnJump(InputAction.CallbackContext context)
 {
-    // Fires once when action is performed
+    // Срабатывает один раз при выполнении действия
     Jump();
 }
 
 void OnJumpStart(InputAction.CallbackContext context)
 {
-    // Button just pressed - start charging jump
+    // Кнопка только что нажата — начать зарядку прыжка
     StartCharging();
 }
 
 void OnJumpCancel(InputAction.CallbackContext context)
 {
-    // Button released - release charged jump
+    // Кнопка отпущена — выполнить заряженный прыжок
     ReleaseCharge();
 }
 ```
 
-### Polling-Based (Check Every Frame)
+### На основе опроса (проверка каждый кадр)
 
-Best for: Continuous input like movement, camera rotation.
+Лучше для: непрерывного ввода — движение, поворот камеры.
 
 ```csharp
 void Update()
 {
-    // Read current value
+    // Считать текущее значение
     Vector2 move = moveAction.ReadValue<Vector2>();
     
-    // Check if triggered this frame
+    // Проверить, сработало ли действие в этом кадре
     if (jumpAction.triggered)
     {
         Jump();
     }
     
-    // Check specific frame states
+    // Проверить конкретные состояния кадра
     if (fireAction.WasPressedThisFrame())
     {
         StartFiring();
@@ -414,27 +414,27 @@ void Update()
 }
 ```
 
-### Update vs FixedUpdate
+### Update против FixedUpdate
 
 ```csharp
 private bool jumpRequested;
 
 void Update()
 {
-    // Read input in Update for responsiveness
+    // Считывать ввод в Update для отзывчивости
     if (jumpAction.WasPressedThisFrame())
     {
         jumpRequested = true;
     }
     
-    // Camera rotation - do in Update
+    // Поворот камеры — выполнять в Update
     Vector2 look = lookAction.ReadValue<Vector2>();
     transform.Rotate(0, look.x * sensitivity * Time.deltaTime, 0);
 }
 
 void FixedUpdate()
 {
-    // Apply physics in FixedUpdate
+    // Применять физику в FixedUpdate
     Vector2 move = moveAction.ReadValue<Vector2>();
     rb.AddForce(new Vector3(move.x, 0, move.y) * moveForce);
     
@@ -448,9 +448,9 @@ void FixedUpdate()
 
 ---
 
-## Practical Examples
+## Практические примеры
 
-### Complete Player Movement
+### Полное движение игрока
 
 ```csharp
 using UnityEngine;
@@ -458,12 +458,12 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Ссылки")]
     [SerializeField] private InputActionReference moveAction;
     [SerializeField] private InputActionReference jumpAction;
     [SerializeField] private InputActionReference sprintAction;
     
-    [Header("Settings")]
+    [Header("Настройки")]
     [SerializeField] private float walkSpeed = 5f;
     [SerializeField] private float sprintSpeed = 10f;
     [SerializeField] private float jumpForce = 5f;
@@ -505,14 +505,14 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Movement
+        // Движение
         Vector2 input = moveAction.action.ReadValue<Vector2>();
         float speed = sprintAction.action.IsPressed() ? sprintSpeed : walkSpeed;
         
         Vector3 move = new Vector3(input.x, 0, input.y) * speed;
         rb.velocity = new Vector3(move.x, rb.velocity.y, move.z);
         
-        // Jump
+        // Прыжок
         if (jumpRequested)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -532,7 +532,7 @@ public class PlayerMovement : MonoBehaviour
 }
 ```
 
-### Mouse Look (First/Third Person Camera)
+### Управление камерой мышью (вид от первого/третьего лица)
 
 ```csharp
 using UnityEngine;
@@ -544,7 +544,7 @@ public class MouseLook : MonoBehaviour
     [SerializeField] private float sensitivity = 0.1f;
     [SerializeField] private float maxPitch = 85f;
     
-    [SerializeField] private Transform playerBody; // For horizontal rotation
+    [SerializeField] private Transform playerBody; // Для горизонтального поворота
     
     private float pitch = 0f;
 
@@ -564,10 +564,10 @@ public class MouseLook : MonoBehaviour
     {
         Vector2 look = lookAction.action.ReadValue<Vector2>();
         
-        // Horizontal rotation (rotate player body)
+        // Горизонтальный поворот (вращаем тело игрока)
         playerBody.Rotate(Vector3.up * look.x * sensitivity);
         
-        // Vertical rotation (rotate camera)
+        // Вертикальный поворот (вращаем камеру)
         pitch -= look.y * sensitivity;
         pitch = Mathf.Clamp(pitch, -maxPitch, maxPitch);
         transform.localRotation = Quaternion.Euler(pitch, 0, 0);
@@ -575,7 +575,7 @@ public class MouseLook : MonoBehaviour
 }
 ```
 
-### Hold and Release (Charge Attack)
+### Удержание и отпускание (заряженная атака)
 
 ```csharp
 using UnityEngine;
@@ -624,24 +624,24 @@ public class ChargeAttack : MonoBehaviour
         if (isCharging)
         {
             chargeTime += Time.deltaTime;
-            // Show charge UI...
+            // Показать UI зарядки...
         }
     }
 
     void Fire(float power)
     {
-        Debug.Log($"Fired with {power * 100}% power!");
+        Debug.Log($"Выстрел с мощностью {power * 100}%!");
     }
 }
 ```
 
 ---
 
-## Runtime Rebinding
+## Переназначение клавиш во время выполнения
 
-Allow players to customize their controls at runtime.
+Позвольте игрокам настраивать управление в процессе игры.
 
-### Display Current Binding
+### Отображение текущей привязки
 
 ```csharp
 using UnityEngine;
@@ -652,7 +652,7 @@ public class BindingDisplay : MonoBehaviour
 {
     [SerializeField] private InputActionReference action;
     [SerializeField] private TMP_Text bindingText;
-    [SerializeField] private int bindingIndex = 0; // 0 for first binding
+    [SerializeField] private int bindingIndex = 0; // 0 для первой привязки
 
     void Start()
     {
@@ -666,7 +666,7 @@ public class BindingDisplay : MonoBehaviour
 }
 ```
 
-### Interactive Rebinding
+### Интерактивное переназначение
 
 ```csharp
 using UnityEngine;
@@ -692,7 +692,7 @@ public class RebindUI : MonoBehaviour
 
     void StartRebinding()
     {
-        // Disable action during rebind
+        // Отключить действие на время переназначения
         actionToRebind.action.Disable();
         
         rebindButton.interactable = false;
@@ -742,7 +742,7 @@ public class RebindUI : MonoBehaviour
 }
 ```
 
-### Save and Load Bindings
+### Сохранение и загрузка привязок
 
 ```csharp
 using UnityEngine;
@@ -785,9 +785,9 @@ public class BindingSaveLoad : MonoBehaviour
 
 ---
 
-## Best Practices
+## Лучшие практики
 
-### 1. Always Enable/Disable Actions
+### 1. Всегда включайте/отключайте действия
 ```csharp
 void OnEnable()
 {
@@ -800,7 +800,7 @@ void OnDisable()
 }
 ```
 
-### 2. Always Unsubscribe from Callbacks
+### 2. Всегда отписывайтесь от коллбэков
 ```csharp
 void OnEnable()
 {
@@ -809,21 +809,21 @@ void OnEnable()
 
 void OnDisable()
 {
-    jumpAction.performed -= OnJump; // Prevents memory leaks!
+    jumpAction.performed -= OnJump; // Предотвращает утечки памяти!
 }
 ```
 
-### 3. Check Device Availability
+### 3. Проверяйте доступность устройства
 ```csharp
 void Update()
 {
-    if (Gamepad.current == null) return; // No gamepad connected
+    if (Gamepad.current == null) return; // Геймпад не подключён
     
     Vector2 stick = Gamepad.current.leftStick.ReadValue();
 }
 ```
 
-### 4. Use Action Maps for Game States
+### 4. Используйте Action Maps для состояний игры
 ```csharp
 void EnterMenu()
 {
@@ -838,9 +838,9 @@ void ExitMenu()
 }
 ```
 
-### 5. Cache InputActionReference Values
+### 5. Кэшируйте значения InputActionReference
 ```csharp
-// Good - cache the action
+// Правильно — кэшировать действие
 private InputAction cachedMoveAction;
 
 void Awake()
@@ -856,55 +856,55 @@ void Update()
 
 ---
 
-## Quick Reference
+## Краткий справочник
 
-### Device Access
+### Доступ к устройствам
 ```csharp
-Keyboard.current      // Current keyboard
-Mouse.current         // Current mouse
-Gamepad.current       // First connected gamepad
-Gamepad.all[0]        // Specific gamepad by index
-Touchscreen.current   // Current touchscreen
+Keyboard.current      // Текущая клавиатура
+Mouse.current         // Текущая мышь
+Gamepad.current       // Первый подключённый геймпад
+Gamepad.all[0]        // Конкретный геймпад по индексу
+Touchscreen.current   // Текущий сенсорный экран
 ```
 
-### Button States
+### Состояния кнопок
 ```csharp
-button.isPressed              // Currently held down
-button.wasPressedThisFrame    // Just pressed this frame
-button.wasReleasedThisFrame   // Just released this frame
+button.isPressed              // Удерживается прямо сейчас
+button.wasPressedThisFrame    // Только что нажата в этом кадре
+button.wasReleasedThisFrame   // Только что отпущена в этом кадре
 ```
 
-### Action States
+### Состояния действий
 ```csharp
-action.triggered              // Performed this frame
-action.WasPressedThisFrame()  // Started this frame
-action.WasReleasedThisFrame() // Canceled this frame
-action.ReadValue<T>()         // Current value
-action.IsPressed()            // Currently active
+action.triggered              // Выполнено в этом кадре
+action.WasPressedThisFrame()  // Началось в этом кадре
+action.WasReleasedThisFrame() // Отменено в этом кадре
+action.ReadValue<T>()         // Текущее значение
+action.IsPressed()            // Активно в данный момент
 ```
 
-### Enable/Disable Hierarchy
+### Иерархия включения/отключения
 ```csharp
-action.Enable() / action.Disable()        // Single action
-actionMap.Enable() / actionMap.Disable()  // Action map
-asset.Enable() / asset.Disable()          // Entire asset
+action.Enable() / action.Disable()        // Одно действие
+actionMap.Enable() / actionMap.Disable()  // Карта действий
+asset.Enable() / asset.Disable()          // Весь ассет
 ```
 
-### Callbacks
+### Коллбэки
 ```csharp
-action.started += ctx => { };   // Input began
-action.performed += ctx => { }; // Input performed (main event)
-action.canceled += ctx => { };  // Input ended
+action.started += ctx => { };   // Ввод начался
+action.performed += ctx => { }; // Ввод выполнен (основное событие)
+action.canceled += ctx => { };  // Ввод завершён
 ```
 
 ---
 
-## Common Gotchas
+## Частые ошибки
 
-1. **Actions Must Be Enabled**: Actions don't work until you call `.Enable()`
-2. **Disable in OnDisable**: Prevents stray input events and memory leaks
-3. **Unsubscribe Callbacks**: Always unsubscribe in `OnDisable` or `OnDestroy`
-4. **Null Device Checks**: `Gamepad.current` is null when no gamepad is connected
-5. **Generated Class Names**: The generated class uses your `.inputactions` filename
-6. **Binding Index**: When rebinding, use the correct binding index (0 = first binding)
-7. **Physics Input**: Read input in `Update`, apply physics in `FixedUpdate`
+1. **Действия должны быть включены**: действия не работают, пока вы не вызовете `.Enable()`
+2. **Отключайте в OnDisable**: предотвращает лишние события ввода и утечки памяти
+3. **Отписывайтесь от коллбэков**: всегда отписывайтесь в `OnDisable` или `OnDestroy`
+4. **Проверка устройства на null**: `Gamepad.current` равен null, если геймпад не подключён
+5. **Имена генерируемых классов**: генерируемый класс использует имя вашего файла `.inputactions`
+6. **Индекс привязки**: при переназначении используйте правильный индекс (0 = первая привязка)
+7. **Физика и ввод**: считывайте ввод в `Update`, применяйте физику в `FixedUpdate`

@@ -1,54 +1,54 @@
-# Unity Factory Pattern - Object Creation
+# Unity Паттерн Фабрика — Создание объектов
 
 ```csharp
-// Interface for the enemy
+// Интерфейс для врага
 public interface IEnemy {
     void Attack();
     void TakeDamage(int damage);
 }
 
-// Concrete implementation of the enemy: Goblin
+// Конкретная реализация врага: Гоблин
 public class Goblin : IEnemy {
-    public void Attack() => Debug.Log("Goblin attacking!");
-    public void TakeDamage(int damage) => Debug.Log($"Goblin taking {damage} damage.");
+    public void Attack() => Debug.Log("Гоблин атакует!");
+    public void TakeDamage(int damage) => Debug.Log($"Гоблин получает {damage} урона.");
 }
 
-// Concrete implementation of the enemy: Orc
+// Конкретная реализация врага: Орк
 public class Orc : IEnemy {
-    public void Attack() => Debug.Log("Orc attacking!");
-    public void TakeDamage(int damage) => Debug.Log($"Orc taking {damage} damage.");
+    public void Attack() => Debug.Log("Орк атакует!");
+    public void TakeDamage(int damage) => Debug.Log($"Орк получает {damage} урона.");
 }
 
-// Factory interface for creating enemies
+// Интерфейс фабрики для создания врагов
 public interface IEnemyFactory {
     IEnemy CreateEnemy();
 }
 
-// Concrete implementation of the factory: GoblinFactory
+// Конкретная реализация фабрики: GoblinFactory
 public class GoblinFactory : IEnemyFactory {
     public IEnemy CreateEnemy() => new Goblin();
 }
 
-// Concrete implementation of the factory: OrcFactory
+// Конкретная реализация фабрики: OrcFactory
 public class OrcFactory : IEnemyFactory {
     public IEnemy CreateEnemy() => new Orc();
 }
 
-// Client class using the factory to create and interact with enemies
+// Клиентский класс, использующий фабрику для создания врагов и взаимодействия с ними
 public class GameManager : MonoBehaviour {
     private void Start() {
         InteractWithEnemy(new GoblinFactory());
         InteractWithEnemy(new OrcFactory());
 
-        // You can introduce new concrete implementations of IEnemy
-        // without modifying existing client code
-        // adhering to the open/closed principle of SOLID design 
+        // Можно добавлять новые конкретные реализации IEnemy
+        // без изменения существующего клиентского кода,
+        // следуя принципу открытости/закрытости из SOLID
     }
 
     private void InteractWithEnemy(IEnemyFactory factory) {
         IEnemy enemy = factory.CreateEnemy();
 
-        // Consistent interaction regardless of the enemy type
+        // Единообразное взаимодействие независимо от типа врага
         enemy.Attack();
         enemy.TakeDamage(20);
     }

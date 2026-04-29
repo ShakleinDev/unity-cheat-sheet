@@ -1,16 +1,16 @@
-# Unity Billboard - Make Object Look At Camera
+# Unity Billboard - Поворот объекта к камере
 
-Keep UI elements or billboards facing the active camera so they remain legible and always visible. `Quaternion.LookRotation` re-orients the forward vector toward the camera while optionally locking a specific axis.
+Удерживайте UI-элементы или билборды повёрнутыми к активной камере, чтобы они всегда оставались читаемыми и видимыми. `Quaternion.LookRotation` переориентирует вектор вперёд в сторону камеры с возможностью блокировки определённой оси.
 
-## Behaviour
+## Поведение
 
-1. Cache a reference to the camera transform you want to face.
-2. Compute the direction from the object to the camera.
-3. Zero out axes you want to lock (e.g., keep billboards upright).
-4. Use `Quaternion.LookRotation` to orient the object toward that direction.
-5. Update in `LateUpdate` so the facing happens after camera movement.
+1. Сохраните ссылку на трансформ камеры, к которой нужно поворачиваться.
+2. Вычислите направление от объекта к камере.
+3. Обнулите оси, которые нужно заблокировать (например, чтобы билборды оставались вертикальными).
+4. Используйте `Quaternion.LookRotation` для ориентации объекта в нужном направлении.
+5. Обновляйте в `LateUpdate`, чтобы поворот происходил после движения камеры.
 
-## Example
+## Пример
 
 ```csharp
 using UnityEngine;
@@ -18,7 +18,7 @@ using UnityEngine;
 public class BillboardToCamera : MonoBehaviour
 {
     [SerializeField] private Transform cameraTransform;
-    [SerializeField] private bool lockY = true; // keep upright for world-space UI
+    [SerializeField] private bool lockY = true; // сохранять вертикальное положение для UI в мировом пространстве
 
     private void Awake()
     {
@@ -40,7 +40,7 @@ public class BillboardToCamera : MonoBehaviour
             direction.y = 0f;
             if (direction.sqrMagnitude < 0.0001f)
             {
-                return; // avoid invalid look rotation
+                return; // избежать некорректного поворота
             }
         }
 
@@ -49,9 +49,9 @@ public class BillboardToCamera : MonoBehaviour
 }
 ```
 
-### Notes
+### Примечания
 
-- For UI canvases, ensure the canvas render mode is **World Space** or **Camera** to observe the effect.
-- Locking Y prevents the object from tilting on steep camera angles—disable it for effects that should fully track the camera.
-- If several billboards exist, cache the camera transform in a shared manager to avoid repeated `Camera.main` calls.
-- Use `transform.LookAt(cameraTransform)` as a shorthand when you do not need axis locking.
+- Для UI-канвасов убедитесь, что режим рендеринга канваса — **World Space** или **Camera**, чтобы увидеть эффект.
+- Блокировка оси Y предотвращает наклон объекта при крутых углах камеры — отключите её для эффектов, которые должны полностью отслеживать камеру.
+- Если существует несколько билбордов, кэшируйте трансформ камеры в общем менеджере, чтобы избежать повторных вызовов `Camera.main`.
+- Используйте `transform.LookAt(cameraTransform)` как краткую запись, если блокировка оси не нужна.

@@ -1,14 +1,14 @@
-# Unity Scriptable Objects - Data Containers Guide
+# Unity Scriptable Objects — Руководство по контейнерам данных
 
 ```csharp
-// ScriptableObjects are data containers that you can use to save large amounts of data, independent of class instances.
+// ScriptableObjects — это контейнеры данных, которые позволяют хранить большие объёмы данных независимо от экземпляров классов.
 [CreateAssetMenu(fileName = "NewData", menuName = "ScriptableObjects/Data")]
 public class Data : ScriptableObject {
     public string dataName;
     public int dataValue;
 }
 
-// Usage
+// Применение
 Data myData = ScriptableObject.CreateInstance<Data>();
 ```
 

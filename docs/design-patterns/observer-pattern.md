@@ -1,12 +1,12 @@
-# Unity Observer Pattern - Event-Driven Architecture
+# Unity Паттерн Наблюдатель — Событийная Архитектура
 
 ```csharp
-// Observer interface
+// Интерфейс наблюдателя
 public interface IObserver {
     void UpdateObserver(string message);
 }
 
-// Concrete implementation of the observer
+// Конкретная реализация наблюдателя
 public class ConcreteObserver : IObserver {
     private string name;
 
@@ -15,11 +15,11 @@ public class ConcreteObserver : IObserver {
     }
 
     public void UpdateObserver(string message) {
-        Debug.Log($"{name} received message: {message}");
+        Debug.Log($"{name} получил сообщение: {message}");
     }
 }
 
-// Subject class
+// Класс субъекта
 public class Subject {
     private List<IObserver> observers = new List<IObserver>();
 
@@ -38,19 +38,19 @@ public class Subject {
     }
 }
 
-// Example of usage
+// Пример использования
 public class ObserverExample : MonoBehaviour {
     private void Start() {
         Subject subject = new Subject();
 
-        ConcreteObserver observer1 = new ConcreteObserver("Observer 1");
-        ConcreteObserver observer2 = new ConcreteObserver("Observer 2");
+        ConcreteObserver observer1 = new ConcreteObserver("Наблюдатель 1");
+        ConcreteObserver observer2 = new ConcreteObserver("Наблюдатель 2");
 
         subject.AddObserver(observer1);
         subject.AddObserver(observer2);
 
-        // Notify all observers
-        subject.NotifyObservers("Hello Observers!");
+        // Уведомить всех наблюдателей
+        subject.NotifyObservers("Привет, наблюдатели!");
     }
 }
 

@@ -1,24 +1,24 @@
-# Unity State Pattern - Finite State Machines
+# Unity — Паттерн «Состояние» (Конечные автоматы)
 
-The State Pattern allows an object to alter its behavior when its internal state changes. It encapsulates state-specific behavior and makes state transitions explicit.
+Паттерн «Состояние» позволяет объекту изменять своё поведение при изменении внутреннего состояния. Он инкапсулирует поведение, специфичное для каждого состояния, и делает переходы между состояниями явными.
 
-#### Basic Example
+#### Базовый пример
 ```csharp
-// State interface
+// Интерфейс состояния
 public interface IState {
     void Enter();
     void Update();
     void Exit();
 }
 
-// Example state implementation
+// Пример реализации состояния
 public class IdleState : IState {
-    public void Enter() => Debug.Log("Entered Idle State");
-    public void Update() => Debug.Log("Updating Idle State");
-    public void Exit() => Debug.Log("Exited Idle State");
+    public void Enter() => Debug.Log("Вошли в состояние покоя");
+    public void Update() => Debug.Log("Обновление состояния покоя");
+    public void Exit() => Debug.Log("Вышли из состояния покоя");
 }
 
-// State machine that manages state transitions
+// Машина состояний, управляющая переходами между состояниями
 public class StateMachine : MonoBehaviour {
     private IState currentState;
 
@@ -34,11 +34,11 @@ public class StateMachine : MonoBehaviour {
 }
 ```
 
-#### Detailed Example - Game Onboarding System
-A complete example showing how to implement a game onboarding/tutorial system using the State Pattern. This implementation demonstrates how to:
-- Manage different tutorial states (movement, combat, inventory)
-- Handle state transitions
-- Track player progress through the tutorial
+#### Подробный пример — система обучения (онбординга) в игре
+Полный пример реализации системы онбординга/обучения с использованием паттерна «Состояние». Реализация демонстрирует:
+- Управление различными состояниями обучения (движение, бой, инвентарь)
+- Обработку переходов между состояниями
+- Отслеживание прогресса игрока в процессе обучения
 
-👉 [View Full Implementation](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/StatePattern/README.md)
+👉 [Посмотреть полную реализацию](https://github.com/ozankasikci/unity-cheat-sheet/tree/master/Patterns/StatePattern/README.md)
 

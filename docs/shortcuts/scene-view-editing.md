@@ -1,17 +1,17 @@
-# Unity Scene View Editing Shortcuts
+# Горячие клавиши редактирования в режиме сцены Unity
 
 ```
-Q - Pan tool
-W - Move tool
-E - Rotate tool
-R - Scale tool
-T - Rect tool
-Y - Transform tool
+Q - Инструмент перемещения камеры (Pan)
+W - Инструмент перемещения объекта
+E - Инструмент вращения
+R - Инструмент масштабирования
+T - Инструмент прямоугольника (Rect)
+Y - Инструмент трансформации
 
-CTRL/CMD + Z - Undo
-CTRL/CMD + Y - Redo
-CTRL/CMD + S - Save
-CTRL/CMD + P - Play/Stop
-CTRL/CMD + SHIFT + P - Pause
+CTRL/CMD + Z - Отменить действие
+CTRL/CMD + Y - Повторить действие
+CTRL/CMD + S - Сохранить
+CTRL/CMD + P - Запустить/Остановить
+CTRL/CMD + SHIFT + P - Пауза
 ```
 

@@ -1,45 +1,60 @@
-# Unity MonoBehaviour - Lifecycle Methods and Events
+# Unity MonoBehaviour — Методы жизненного цикла и события
 
-`MonoBehaviour` is the base class that gives Unity scripts their lifecycle hooks, inspector exposure, and access to coroutines. Almost every gameplay script you write will inherit from it, so knowing when Unity invokes each callback is crucial.
+`MonoBehaviour` — это базовый класс, который предоставляет Unity-скриптам хуки жизненного цикла, отображение в инспекторе и доступ к корутинам. Почти каждый игровой скрипт наследуется от него, поэтому важно понимать, когда Unity вызывает каждый коллбэк.
 
-👉 [Official Execution Order Chart](https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg)
+👉 [Официальная схема порядка выполнения](https://docs.unity3d.com/uploads/Main/monobehaviour_flowchart.svg)
 
-## Lifecycle Overview
+## Обзор жизненного цикла
 
-| Phase | Callback | Notes |
+| # | Фаза | Коллбэк | Описание |
+| --- | --- | --- | --- |
+| 1 | Инициализация | `Awake()` | Вызывается при загрузке экземпляра скрипта. Устанавливайте ссылки здесь, даже если объект отключён. |
+| 2 | Инициализация | `OnEnable()` | Вызывается каждый раз, когда объект становится активным. Используйте в паре с `OnDisable()`. |
+| 3 | Пост-инициализация | `Start()` | Выполняется в первом кадре, когда скрипт активен. Все остальные компоненты уже завершили свой `Awake()`. |
+| 4 | Обновление кадра | `Update()` | Выполняется один раз за кадр. Используйте для опроса ввода или таймеров. |
+| 5 | Позднее обновление | `LateUpdate()` | Выполняется каждый кадр после всех вызовов `Update()`. Подходит для логики следования камеры. |
+| 6 | Видимость | `OnBecameVisible()` | Вызывается, когда рендерер объекта становится виден любой камере. |
+| 7 | Видимость | `OnBecameInvisible()` | Вызывается, когда рендерер объекта перестаёт быть виден любой камере. |
+| 8 | Редактор | `OnDrawGizmos()` | Позволяет рисовать Gizmos в окне Scene View. |
+| 9 | GUI | `OnGUI()` | Вызывается несколько раз за кадр в ответ на события GUI. Устаревший IMGUI; современная альтернатива — Canvas UI. |
+| 10 | События приложения | `OnApplicationPause()` | Вызывается в конце кадра при обнаружении паузы (актуально для мобильных платформ). |
+| 11 | Отключение | `OnDisable()` | Вызывается каждый раз, когда объект отключается. Очищайте подписки на события. |
+| 12 | Уничтожение | `OnDestroy()` | Вызывается только для ранее активных GameObject при их уничтожении. |
+
+> **Шаг физики (`FixedUpdate`)** определяется настройкой **Edit ⇒ Project Settings ⇒ Time ⇒ Fixed Timestep** и может выполняться более или менее одного раза за фактический кадр.
+
+| Фаза | Коллбэк | Описание |
 | --- | --- | --- |
-| Initialization | `Awake()` | Called once when the script instance loads. Setup references here, even if the object is disabled. |
-| Initialization | `OnEnable()` | Fires every time the component or GameObject becomes enabled. Pair with `OnDisable()`. |
-| Post-Initialization | `Start()` | Runs on the first frame when the script is enabled. All other components have finished their `Awake()`. |
-| Frame Update | `Update()` | Per-frame logic tied to the render loop. Use for input polling or timers. |
-| Physics Step | `FixedUpdate()` | Runs at a fixed timestep (default 0.02s). Apply physics forces here. |
-| Late Frame | `LateUpdate()` | Executes after all `Update()` calls. Good for camera follow logic. |
-| GUI | `OnGUI()` | Legacy IMGUI rendering. Use sparingly; Canvas UI is the modern alternative. |
-| Disable/Destroy | `OnDisable()`, `OnDestroy()` | Clean up listeners, dispose resources. `OnDestroy` fires even if an object is unloaded when changing scenes. |
-| App Events | `OnApplicationPause`, `OnApplicationFocus`, `OnApplicationQuit` | Respond to platform-level state changes (mobile suspend, OS focus). |
+| Шаг физики | `FixedUpdate()` | Выполняется каждый Fixed Timestep. Применяйте физические силы здесь, используйте `Time.fixedDeltaTime`. |
 
-### Execution Order Example
+### Пример порядка выполнения
 
 ```csharp
 using UnityEngine;
 
 public class LifecycleLogger : MonoBehaviour
 {
-    private void Awake() => Debug.Log("Awake");
-    private void OnEnable() => Debug.Log("OnEnable");
-    private void Start() => Debug.Log("Start");
-    private void Update() => Debug.Log("Update");
-    private void LateUpdate() => Debug.Log("LateUpdate");
-    private void OnDisable() => Debug.Log("OnDisable");
-    private void OnDestroy() => Debug.Log("OnDestroy");
+    private void Awake()              => Debug.Log("Awake");
+    private void OnEnable()           => Debug.Log("OnEnable");
+    private void Start()              => Debug.Log("Start");
+    private void FixedUpdate()        => Debug.Log("FixedUpdate");
+    private void Update()             => Debug.Log("Update");
+    private void LateUpdate()         => Debug.Log("LateUpdate");
+    private void OnBecameVisible()    => Debug.Log("OnBecameVisible");
+    private void OnBecameInvisible()  => Debug.Log("OnBecameInvisible");
+    private void OnDrawGizmos()       => Debug.Log("OnDrawGizmos");
+    private void OnGUI()              => Debug.Log("OnGUI");
+    private void OnApplicationPause(bool pause) => Debug.Log($"OnApplicationPause({pause})");
+    private void OnDisable()          => Debug.Log("OnDisable");
+    private void OnDestroy()          => Debug.Log("OnDestroy");
 }
 ```
 
-Place the script on a GameObject and toggle it in Play Mode to observe the order in the Console. Remember that disabling and re-enabling the GameObject will call `OnDisable()`/`OnEnable()` without re-running `Awake()` or `Start()`.
+Разместите скрипт на GameObject и переключайте его в режиме Play, чтобы наблюдать порядок вызовов в консоли. Помните, что отключение и повторное включение GameObject вызовет `OnDisable()`/`OnEnable()`, но не перезапустит `Awake()` или `Start()`.
 
-## Coroutines
+## Корутины
 
-MonoBehaviours can start coroutines, which are methods returning `IEnumerator`. They let you sequence actions over time without blocking the main thread.
+MonoBehaviour поддерживает запуск корутин — методов, возвращающих `IEnumerator`. Они позволяют выстраивать последовательность действий во времени без блокировки основного потока.
 
 ```csharp
 private void Start()
@@ -53,32 +68,32 @@ private IEnumerator FadeOutRoutine()
     while (elapsed < 1f)
     {
         elapsed += Time.deltaTime;
-        yield return null; // Wait for next frame
+        yield return null; // Ждём следующий кадр
     }
 }
 ```
 
-Use `StopCoroutine` or `StopAllCoroutines` in `OnDisable()` to ensure clean shutdowns when objects are turned off.
+Используйте `StopCoroutine` или `StopAllCoroutines` в `OnDisable()`, чтобы корректно завершать корутины при отключении объектов.
 
-## Managing Execution Order
+## Управление порядком выполнения
 
-- Unity calls all `Awake()` methods before any `Start()`. If you depend on another script’s initialization, fetch references in `Awake()` but use them in `Start()`.
-- Adjust script execution order via **Project Settings > Script Execution Order** when systems have strict dependencies. Alternatively, add `[DefaultExecutionOrder(n)]` on the class to bake order into the script.
-- Avoid heavy work in `Awake()`/`Start()` when loading scenes; consider async loading or lazy initialization instead.
+- Unity вызывает все методы `Awake()` до любого `Start()`. Если вы зависите от инициализации другого скрипта, получайте ссылки в `Awake()`, а используйте их в `Start()`.
+- Настройте порядок выполнения скриптов через **Project Settings > Script Execution Order** при наличии строгих зависимостей. Альтернативно, добавьте атрибут `[DefaultExecutionOrder(n)]` к классу, чтобы закрепить порядок в скрипте.
+- Избегайте тяжёлых операций в `Awake()`/`Start()` при загрузке сцен; рассмотрите асинхронную загрузку или отложенную инициализацию.
 
-## Best Practices
+## Лучшие практики
 
-- Cache component references in `Awake()` to avoid repeated `GetComponent` calls during `Update()`.
-- Split responsibilities: `Update()` for input/state checks, `FixedUpdate()` for physics, `LateUpdate()` for camera post-processing.
-- Guard event subscriptions: subscribe in `OnEnable()`, unsubscribe in `OnDisable()` to prevent leaks.
-- Prefer dependency injection or serialized fields over `FindObjectOfType`, which is slow and brittle.
-- Do not rely on constructors—Unity bypasses them when instantiating MonoBehaviours.
+- Кешируйте ссылки на компоненты в `Awake()`, чтобы избежать повторных вызовов `GetComponent` в `Update()`.
+- Разделяйте ответственность: `Update()` — для ввода и проверки состояний, `FixedUpdate()` — для физики, `LateUpdate()` — для пост-обработки камеры.
+- Защищайте подписки на события: подписывайтесь в `OnEnable()`, отписывайтесь в `OnDisable()`, чтобы избежать утечек.
+- Предпочитайте внедрение зависимостей или сериализованные поля вместо `FindObjectOfType` — это медленно и ненадёжно.
+- Не полагайтесь на конструкторы — Unity обходит их при создании экземпляров MonoBehaviour.
 
-## Common Pitfalls
+## Частые ошибки
 
-- **Missing `Start()` on disabled objects:** Unity calls `Awake()` even if the GameObject is inactive, but `Start()` waits until it becomes active.
-- **Destroying during iteration:** Removing objects inside `Update()` loops can cause unexpected behaviour; queue destruction with `Destroy(gameObject)` and let Unity handle it at frame end.
-- **Physics in Update:** Applying forces or reading Rigidbody properties in `Update()` creates jitter. Use `FixedUpdate()` and `Time.fixedDeltaTime`.
-- **Coroutines on disabled scripts:** Starting a coroutine while disabled does nothing. Ensure the MonoBehaviour is enabled first.
+- **Отсутствие вызова `Start()` на отключённых объектах:** Unity вызывает `Awake()` даже если GameObject неактивен, но `Start()` ждёт, пока он не станет активным.
+- **Уничтожение во время итерации:** Удаление объектов внутри циклов `Update()` может привести к непредсказуемому поведению; ставьте в очередь уничтожение через `Destroy(gameObject)` и позвольте Unity обработать это в конце кадра.
+- **Физика в Update:** Применение сил или чтение свойств Rigidbody в `Update()` вызывает дрожание. Используйте `FixedUpdate()` и `Time.fixedDeltaTime`.
+- **Корутины на отключённых скриптах:** Запуск корутины на отключённом компоненте ничего не делает. Убедитесь, что MonoBehaviour активен перед запуском.
 
-Understanding the MonoBehaviour lifecycle gives you predictable, testable scripts that cooperate with Unity’s engine loops. Combine these callbacks thoughtfully to build responsive gameplay systems.
+Понимание жизненного цикла MonoBehaviour позволяет писать предсказуемые, тестируемые скрипты, которые корректно работают совместно с циклами движка Unity. Грамотно комбинируйте эти коллбэки для построения отзывчивых игровых систем.

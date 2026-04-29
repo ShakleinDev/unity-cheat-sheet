@@ -1,24 +1,24 @@
-# Unity Ignore Collision - Disable Physics Interactions
+# Unity Игнорирование Коллизий - Отключение Физических Взаимодействий
 
-Disable collision detection between specific colliders or entire layers.
+Отключение обнаружения столкновений между конкретными коллайдерами или целыми слоями.
 
-> For collision/trigger event handling, see [Collisions & Triggers](collisions.md)
+> Для обработки событий столкновений и триггеров см. [Коллизии и Триггеры](collisions.md)
 
 ## Physics.IgnoreCollision
 
-Ignore collisions between two specific colliders:
+Игнорирование столкновений между двумя конкретными коллайдерами:
 
 ```csharp
-// Makes the collision detection system ignore all collisions between collider1 and collider2.
+// Заставляет систему обнаружения коллизий игнорировать все столкновения между collider1 и collider2.
 public static void IgnoreCollision(Collider collider1, Collider collider2, bool ignore = true);
 
-// Example: Disable collision between ally and bullet
+// Пример: Отключить столкновение между союзником и пулей
 Transform bullet;
 Transform ally;
 Physics.IgnoreCollision(bullet.GetComponent<Collider>(), ally.GetComponent<Collider>());
 ```
 
-### Practical Example: Spawned Projectile
+### Практический Пример: Созданный Снаряд
 
 ```csharp
 public class ProjectileSpawner : MonoBehaviour
@@ -29,7 +29,7 @@ public class ProjectileSpawner : MonoBehaviour
     {
         GameObject projectile = Instantiate(projectilePrefab, transform.position, transform.rotation);
         
-        // Prevent projectile from colliding with the object that spawned it
+        // Предотвратить столкновение снаряда с объектом, который его создал
         Physics.IgnoreCollision(projectile.GetComponent<Collider>(), GetComponent<Collider>());
     }
 }
@@ -37,47 +37,47 @@ public class ProjectileSpawner : MonoBehaviour
 
 ## Physics.IgnoreLayerCollision
 
-Ignore collisions between entire layers (more efficient for many objects):
+Игнорирование столкновений между целыми слоями (более эффективно при большом количестве объектов):
 
 ```csharp
-// Ignore collisions between layer 8 (e.g., "Player") and layer 9 (e.g., "PlayerProjectiles")
+// Игнорировать столкновения между слоем 8 (например, "Player") и слоем 9 (например, "PlayerProjectiles")
 Physics.IgnoreLayerCollision(8, 9, true);
 
-// Using LayerMask for readability
+// Использование LayerMask для удобочитаемости
 int playerLayer = LayerMask.NameToLayer("Player");
 int projectileLayer = LayerMask.NameToLayer("PlayerProjectiles");
 Physics.IgnoreLayerCollision(playerLayer, projectileLayer, true);
 ```
 
-### Restore Collision
+### Восстановление Коллизий
 
 ```csharp
-// Re-enable collision between two colliders
+// Повторно включить столкновение между двумя коллайдерами
 Physics.IgnoreCollision(collider1, collider2, false);
 
-// Re-enable collision between layers
+// Повторно включить столкновение между слоями
 Physics.IgnoreLayerCollision(playerLayer, projectileLayer, false);
 ```
 
-## Layer Collision Matrix (Editor)
+## Матрица Коллизий Слоёв (Редактор)
 
-For permanent layer collision settings, use:  
+Для постоянной настройки столкновений между слоями используйте:  
 **Edit > Project Settings > Physics > Layer Collision Matrix**
 
-This is more efficient than runtime `IgnoreLayerCollision` calls for static configurations.
+Это эффективнее, чем вызовы `IgnoreLayerCollision` во время выполнения для статических конфигураций.
 
-## 2D Equivalents
+## Эквиваленты для 2D
 
 ```csharp
-// Ignore collision between two 2D colliders
+// Игнорировать столкновение между двумя 2D коллайдерами
 Physics2D.IgnoreCollision(collider2D_1, collider2D_2, true);
 
-// Ignore collision between 2D layers
+// Игнорировать столкновение между 2D слоями
 Physics2D.IgnoreLayerCollision(layer1, layer2, true);
 ```
 
-## See Also
+## Смотрите Также
 
-- [Collisions & Triggers](collisions.md) - Handling collision events
-- [Raycast](raycast.md) - Ray-based collision detection
+- [Коллизии и Триггеры](collisions.md) - Обработка событий столкновений
+- [Raycast](raycast.md) - Обнаружение столкновений с помощью лучей
 
