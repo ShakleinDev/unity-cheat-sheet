@@ -1536,8 +1536,3 @@ The following topics are planned to be added to the documentation:
 - [ ] More advanced scripting topics coming soon
 
 ---
-
-<div align="center">
-  <img src="docs/assets/images/longhorn-logo.png" alt="" width="120">
-  <p><em>Built with ❤️ by <a href="https://longhorn.games/">Longhorn Games</a></em></p>
-</div>
